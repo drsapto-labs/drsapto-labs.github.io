@@ -4,10 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrSaptoLabs - Solusi Aplikasi Produktivitas & Kesehatan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Dr. Sapto Labs - Solusi Aplikasi Kesehatan & Produktivitas</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Inisiatif teknologi dr. Sapto Sutardi menghadirkan asisten klinis presisi & kalkulator obstetri offline serta aplikasi penunjang produktivitas.">
+    <meta name="keywords" content="obstetri, kalkulator, usia kehamilan, hpl, hpht, hadlock, intergrowth, dr sapto, medis, puskesmas, lombok">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Menggunakan FontAwesome untuk Ikon -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -20,21 +24,19 @@
 
     <div class="container">
         <!-- Bagian Profil (About Me) -->
-        <section class="profile-section">
+        <section class="profile-section" id="profile">
             <div class="profile-content">
                 <div class="profile-text">
                     <h2>Tentang Inisiatif Ini</h2>
                     <p>Halo, saya <strong>dr. Sapto Sutardi</strong>. Sebagai seorang dokter yang bertugas di salah satu
-                        Puskesmas di Kab. Lombok Barat, saya suka melihat langsung bagaimana teknologi dapat
-                        menjembatani
-                        kesenjangan dalam pelayanan kesehatan maupun produktivitas sehari-hari.</p>
+                        Puskesmas di Kab. Lombok Barat, saya melihat langsung bagaimana teknologi dapat menjembatani
+                        kesenjangan dalam pelayanan kesehatan maupun meningkatkan produktivitas sehari-hari.</p>
                     <p>Perjalanan saya sebagai programmer lepas sejak tahun 2009—melintasi era JavaME, Kotlin, hingga
-                        kini berlabuh di Flutter—serta nongkrong di komunitas teknologi <a
+                        kini berlabuh di Flutter—serta aktif di komunitas teknologi <a
                             href="https://lombokdev.github.io/" target="_blank"
-                            style="color: var(--secondary-color); text-decoration: underline; font-weight: 600;">Lombok
-                            Dev</a>, berbagai kondisi ini menjadi latar belakang terbentuknya <strong>DR SAPTO
-                            LABS</strong> sebagai ruang
-                        menyalurkan ide dan inovasi saya.</p>
+                            style="color: var(--primary-light); text-decoration: none; font-weight: 600;">Lombok Dev</a>,
+                        menjadi latar belakang terbentuknya <strong>DR SAPTO LABS</strong> sebagai ruang menyalurkan
+                        ide, riset, dan inovasi digital saya.</p>
                 </div>
                 <div class="profile-badges">
                     <div class="badge-item">
@@ -61,89 +63,292 @@
             </div>
         </section>
 
-        <h2 class="section-title">Aplikasi Kami</h2>
+        <!-- Aplikasi Unggulan: Dr. Sapto ObstetriCalc -->
+        <section class="featured-section" id="featured-app">
+            <span class="featured-label">Aplikasi Unggulan</span>
+            <div class="featured-grid">
+                <div class="featured-details">
+                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                        <img src="images/obstetric_calculator.png" alt="Dr. Sapto ObstetriCalc Logo" style="width: 72px; height: 72px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
+                        <div>
+                            <h3 style="margin-bottom: 2px; font-size: 1.8rem;">Dr. Sapto ObstetriCalc</h3>
+                            <p style="color: var(--primary-light); font-size: 0.95rem; font-weight: 600;">Kalkulator Usia Kehamilan & Pertumbuhan Janin</p>
+                        </div>
+                    </div>
+                    
+                    <p class="featured-desc">Asisten klinis yang elegan, modern, dan presisi untuk dokter kandungan, bidan, residen obstetri, dan praktisi kesehatan. Kalkulator Obstetri menyederhanakan perhitungan usia kehamilan dan pemantauan pertumbuhan janin secara visual & cepat.</p>
+                    
+                    <div class="features-list">
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>3 Mode Kalkulasi (HPHT, USG, UK)</span>
+                        </div>
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Evaluasi Berat Janin (TBJ/EFW)</span>
+                        </div>
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-chart-area"></i>
+                            <span>Kurva Hadlock & Intergrowth-21st</span>
+                        </div>
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Deteksi Deviasi Otomatis</span>
+                        </div>
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>100% Offline & Sangat Privat</span>
+                        </div>
+                        <div class="feature-pill">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Mode Gelap & Terang Adaptif</span>
+                        </div>
+                    </div>
+
+                    <div class="download-buttons">
+                        <!-- App Store Link -->
+                        <a href="https://apps.apple.com/app/id6789321261" class="store-btn" target="_blank">
+                            <i class="fa-brands fa-apple"></i>
+                            <div class="store-btn-text">
+                                <span class="store-btn-subtitle">Download on the</span>
+                                <span class="store-btn-title">App Store</span>
+                            </div>
+                        </a>
+                        
+                        <!-- Google Play Link -->
+                        <a href="https://play.google.com/store/apps/details?id=com.drsaptolabs.obstetric_calculator" class="store-btn store-btn-orange" target="_blank">
+                            <i class="fa-brands fa-google-play"></i>
+                            <div class="store-btn-text">
+                                <span class="store-btn-subtitle">GET IT ON</span>
+                                <span class="store-btn-title">Google Play</span>
+                            </div>
+                        </a>
+
+                        <!-- Kebijakan Privasi -->
+                        <a href="obstetric-calculator-privacy.html" class="privacy-btn">
+                            <i class="fa-solid fa-user-shield" style="margin-right: 8px;"></i>Kebijakan Privasi
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Screenshots Carousel -->
+                <div class="featured-media">
+                    <div class="carousel-container">
+                        <button class="carousel-control-btn carousel-prev-btn" id="prevBtn" aria-label="Slide sebelumnya">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <div class="carousel-track-container">
+                            <ul class="carousel-track" id="carouselTrack">
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_01.png" alt="Dr. Sapto ObstetriCalc Screenshot 1"></li>
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_02.png" alt="Dr. Sapto ObstetriCalc Screenshot 2"></li>
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_03.png" alt="Dr. Sapto ObstetriCalc Screenshot 3"></li>
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_04.png" alt="Dr. Sapto ObstetriCalc Screenshot 4"></li>
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_05.png" alt="Dr. Sapto ObstetriCalc Screenshot 5"></li>
+                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_06.png" alt="Dr. Sapto ObstetriCalc Screenshot 6"></li>
+                            </ul>
+                        </div>
+                        <button class="carousel-control-btn carousel-next-btn" id="nextBtn" aria-label="Slide berikutnya">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <div class="carousel-indicators" id="carouselIndicators">
+                            <button class="carousel-dot active"></button>
+                            <button class="carousel-dot"></button>
+                            <button class="carousel-dot"></button>
+                            <button class="carousel-dot"></button>
+                            <button class="carousel-dot"></button>
+                            <button class="carousel-dot"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <h2 class="section-title">Aplikasi Lainnya</h2>
 
         <div class="apps-grid">
-            <!-- App Card: Kalkulator Obstetri -->
-            <div class="app-card">
-                <img src="images/obstetric_calculator.png" alt="Dr. Sapto ObstetriCalc Logo" class="app-logo">
-                <h3>Dr. Sapto ObstetriCalc</h3>
-                <p>Asisten klinis presisi untuk menghitung usia kehamilan, HPL, dan taksiran berat janin (TBJ) secara
-                    offline dengan kurva Hadlock dan Intergrowth.</p>
-                <a href="https://apps.apple.com/app/id6789321261" class="btn" target="_blank">Lihat Selengkapnya</a><br>
-                <a href="obstetric-calculator-privacy.html" class="btn btn-outline"
-                    style="display: inline-block; width: auto; margin-top: 15px;">Kebijakan Privasi</a>
-            </div>
-
             <!-- App Card: Time Later -->
             <div class="app-card">
-                <img src="images/time_later.png" alt="Time Later Logo" class="app-logo">
-                <h3>Time Later</h3>
-                <p>Aplikasi Watermark profesional untuk dokumentasi foto dengan informasi EXIF, koordinat GPS, alamat,
-                    dan peta otomatis.</p>
-                <a href="#" class="btn"
-                    onclick="alert('Google Play Store Link: Sedang dalam proses review oleh Google!')">Lihat
-                    Selengkapnya</a><br>
-                <a href="timelater-privacy.html" class="btn btn-outline"
-                    style="display: inline-block; width: auto; margin-top: 15px;">Kebijakan Privasi</a>
+                <span class="app-card-tag app-card-tag-featured">Rilis</span>
+                <div class="app-card-content">
+                    <img src="images/time_later.png" alt="Time Later Logo" class="app-logo">
+                    <h3>Time Later</h3>
+                    <p>Aplikasi stempel foto (Watermark) profesional dengan informasi EXIF lengkap, koordinat GPS, alamat, dan peta otomatis untuk kebutuhan dokumentasi.</p>
+                </div>
+                <div class="app-card-actions">
+                    <a href="https://play.google.com/store/apps/details?id=com.drsaptolabs.time_later" class="app-card-btn" target="_blank">
+                        <i class="fa-brands fa-google-play"></i> Google Play
+                    </a>
+                    <a href="timelater-privacy.html" class="app-card-btn app-card-btn-secondary">
+                        Kebijakan Privasi
+                    </a>
+                </div>
             </div>
 
             <!-- App Card: UdaSiap -->
             <div class="app-card">
-                <img src="images/udasiap.png" alt="UdaSiap Logo" class="app-logo">
-                <h3>UdaSiap</h3>
-                <p>Asisten pribadi untuk menyimpan dan mengirim data penting Anda secepat kilat. 100% Gratis, Offline,
-                    dan Aman di HP Anda.</p>
-                <a href="#" class="btn" onclick="alert('Google Play Store Link: Segera Hadir di Play Store!')">Lihat
-                    Selengkapnya</a><br>
-                <a href="udasiap-privacy.html" class="btn btn-outline"
-                    style="display: inline-block; width: auto; margin-top: 15px;">Kebijakan Privasi</a>
+                <span class="app-card-tag">Segera Hadir</span>
+                <div class="app-card-content">
+                    <img src="images/udasiap.png" alt="UdaSiap Logo" class="app-logo">
+                    <h3>UdaSiap</h3>
+                    <p>Asisten pribadi instan untuk menyimpan dan mengirim data penting Anda secepat kilat. 100% Gratis, bekerja offline, dan aman di perangkat Anda.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" onclick="alert('Google Play Store Link: Sedang dalam proses review oleh Google!')">
+                        <i class="fa-solid fa-hourglass-half"></i> Menunggu Review
+                    </button>
+                    <a href="udasiap-privacy.html" class="app-card-btn app-card-btn-secondary">
+                        Kebijakan Privasi
+                    </a>
+                </div>
             </div>
 
             <!-- App Card: Hilal Snap -->
             <div class="app-card">
-                <img src="images/hilal_snap.png" alt="Hilal Snap Logo" class="app-logo">
-                <h3>Hilal Snap (Migrasi)</h3>
-                <p>Pemantauan *new moon* (hilal) dengan Augmented Reality, seakurat standar JPL Horizons.</p>
+                <span class="app-card-tag app-card-tag-migration">Migrasi</span>
+                <div class="app-card-content">
+                    <img src="images/hilal_snap.png" alt="Hilal Snap Logo" class="app-logo">
+                    <h3>Hilal Snap</h3>
+                    <p>Pemantauan bulan baru (*new moon*/hilal) interaktif menggunakan Augmented Reality (AR), dengan tingkat akurasi sesuai standar koordinat JPL Horizons.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" disabled>
+                        <i class="fa-solid fa-toolbox"></i> Proses Migrasi
+                    </button>
+                </div>
             </div>
 
             <!-- App Card: Sapto Pomodoro -->
             <div class="app-card">
-                <img src="images/sapto_pomodoro.png" alt="Sapto Pomodoro Logo" class="app-logo">
-                <h3>Sapto Pomodoro (Migrasi)</h3>
-                <p>Timer pomodoro dengan fitur *tracking* fokus dan latar belakang musik penunjang konsentrasi.</p>
+                <span class="app-card-tag app-card-tag-migration">Migrasi</span>
+                <div class="app-card-content">
+                    <img src="images/sapto_pomodoro.png" alt="Sapto Pomodoro Logo" class="app-logo">
+                    <h3>Sapto Pomodoro</h3>
+                    <p>Timer produktivitas berbasis teknik Pomodoro dengan pelacak durasi fokus, statistik harian, dan musik latar belakang penunjang konsentrasi.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" disabled>
+                        <i class="fa-solid fa-toolbox"></i> Proses Migrasi
+                    </button>
+                </div>
             </div>
 
             <!-- App Card: Cairan Infus Diare -->
             <div class="app-card">
-                <img src="images/cairan_infus_diare.png" alt="Cairan Infus Diare Logo" class="app-logo">
-                <h3>Cairan Infus Diare (Migrasi)</h3>
-                <p>Kalkulator presisi untuk kebutuhan cairan diare anak, disesuaikan dengan standar IDAI.</p>
+                <span class="app-card-tag app-card-tag-migration">Migrasi</span>
+                <div class="app-card-content">
+                    <img src="images/cairan_infus_diare.png" alt="Cairan Infus Diare Logo" class="app-logo">
+                    <h3>Cairan Infus Diare</h3>
+                    <p>Kalkulator presisi untuk menghitung kebutuhan resusitasi cairan pada anak penderita diare akut, disesuaikan dengan pedoman standar klinis IDAI.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" disabled>
+                        <i class="fa-solid fa-toolbox"></i> Proses Migrasi
+                    </button>
+                </div>
             </div>
 
             <!-- App Card: AmalQ -->
             <div class="app-card">
-                <img src="images/amalq.png" alt="AmalQ Logo" class="app-logo">
-                <h3>AmalQ (Migrasi)</h3>
-                <p>Tracker sederhana nan fungsional sebagai ladang amal pembentuk kebiasaan (habit) baik harian.</p>
+                <span class="app-card-tag app-card-tag-migration">Migrasi</span>
+                <div class="app-card-content">
+                    <img src="images/amalq.png" alt="AmalQ Logo" class="app-logo">
+                    <h3>AmalQ</h3>
+                    <p>Tracker ibadah sederhana nan fungsional sebagai penunjang pembentukan kebiasaan (habit) baik serta pelacakan target amal harian Anda.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" disabled>
+                        <i class="fa-solid fa-toolbox"></i> Proses Migrasi
+                    </button>
+                </div>
             </div>
 
             <!-- App Card: Anthro -->
             <div class="app-card">
-                <img src="images/dr_sapto_anthro.png" alt="dr. Sapto Anthro Logo" class="app-logo">
-                <h3>dr. Sapto Anthro (Migrasi)</h3>
-                <p>Penilai dan pencatat status gizi anak secara akurat dengan menggunakan standar pertumbuhan WHO.</p>
+                <span class="app-card-tag app-card-tag-migration">Migrasi</span>
+                <div class="app-card-content">
+                    <img src="images/dr_sapto_anthro.png" alt="dr. Sapto Anthro Logo" class="app-logo">
+                    <h3>dr. Sapto Anthro</h3>
+                    <p>Aplikasi penilai dan pencatat status gizi anak secara akurat menggunakan penghitungan Z-Score standar pertumbuhan global dari WHO.</p>
+                </div>
+                <div class="app-card-actions">
+                    <button class="app-card-btn app-card-btn-disabled" disabled>
+                        <i class="fa-solid fa-toolbox"></i> Proses Migrasi
+                    </button>
+                </div>
             </div>
 
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 DR SAPTO LABS. Dibuat dengan <i class="fa-solid fa-heart" style="color: #e25555;"></i> di Lombok,
-            Indonesia.</p>
+        <p>&copy; 2026 DR SAPTO LABS. Dibuat dengan <i class="fa-solid fa-heart footer-heart"></i> di Lombok, Indonesia.</p>
         <p>Hubungi: <a href="mailto:drsapto.labs@gmail.com">drsapto.labs@gmail.com</a></p>
     </footer>
 
+    <!-- JavaScript untuk Screenshot Carousel -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('carouselTrack');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dots = document.querySelectorAll('.carousel-dot');
+            const slides = document.querySelectorAll('.carousel-slide');
+            
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            const updateCarousel = (index) => {
+                // Batasi index
+                if (index < 0) index = slideCount - 1;
+                if (index >= slideCount) index = 0;
+                
+                currentIndex = index;
+                
+                // Geser track
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Update indikator dot
+                dots.forEach((dot, idx) => {
+                    if (idx === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            };
+
+            // Event Listeners
+            prevBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex + 1);
+            });
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    updateCarousel(idx);
+                });
+            });
+
+            // Auto-play (opsional, setiap 5 detik)
+            let autoPlayInterval = setInterval(() => {
+                updateCarousel(currentIndex + 1);
+            }, 5000);
+
+            // Berhentikan auto-play jika di-hover atau di-klik manual
+            const container = document.querySelector('.carousel-container');
+            container.addEventListener('mouseenter', () => {
+                clearInterval(autoPlayInterval);
+            });
+            container.addEventListener('mouseleave', () => {
+                autoPlayInterval = setInterval(() => {
+                    updateCarousel(currentIndex + 1);
+                }, 5000);
+            });
+        });
+    </script>
 </body>
 
 </html>
