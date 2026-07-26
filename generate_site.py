@@ -132,13 +132,12 @@ def main():
         
         featured_html = f"""        <!-- Aplikasi Unggulan: {featured_app['web_name']} -->
         <section class="featured-section" id="featured-app">
-            <span class="featured-label">Aplikasi Unggulan</span>
             <div class="featured-grid">
                 <div class="featured-details">
                     <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
                         <img src="{featured_app['web_logo']}" alt="{featured_app['web_name']} Logo" style="width: 72px; height: 72px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
                         <div>
-                            <h3 style="margin-bottom: 2px; font-size: 1.8rem;">{featured_app['web_name']}</h3>
+                            <h3 class="gradient-text" style="margin-bottom: 2px; font-size: 1.8rem;">{featured_app['web_name']}</h3>
                             <p style="color: var(--primary-light); font-size: 0.95rem; font-weight: 600;">Kalkulator Usia Kehamilan & Pertumbuhan Janin</p>
                         </div>
                     </div>

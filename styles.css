@@ -36,28 +36,19 @@ body {
 }
 
 /* Background decorative glows */
-body::before, body::after {
+body::before {
   content: "";
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   z-index: -1;
   filter: blur(120px);
-  opacity: 0.15;
+  opacity: 0.08;
   pointer-events: none;
-}
-
-body::before {
   top: 10%;
   left: -100px;
   background-color: var(--primary);
-}
-
-body::after {
-  top: 60%;
-  right: -100px;
-  background-color: var(--secondary);
 }
 
 header {
@@ -68,24 +59,12 @@ header {
   position: relative;
 }
 
-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
-}
-
 header h1 {
   font-size: 2.8rem;
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, #ffffff 30%, var(--primary-light) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 header p {
@@ -114,16 +93,6 @@ header p {
   box-shadow: var(--shadow-xl), 0 0 30px rgba(13, 148, 136, 0.05);
   position: relative;
   overflow: hidden;
-}
-
-.profile-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--primary-light), var(--primary));
 }
 
 .profile-content {
@@ -212,19 +181,7 @@ header p {
   overflow: hidden;
 }
 
-.featured-label {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-  color: var(--text-primary);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 6px 14px;
-  border-radius: 99px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 12px var(--teal-glow);
-}
+
 
 .featured-grid {
   display: grid;
@@ -482,9 +439,14 @@ header p {
   margin-bottom: 40px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #ffffff 40%, var(--primary-light) 100%);
+  color: var(--text-primary);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 30%, var(--primary-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .apps-grid {
@@ -663,12 +625,5 @@ footer p {
 footer .footer-heart {
   color: #ef4444;
   margin: 0 2px;
-  animation: heartBeat 1.5s infinite;
   display: inline-block;
-}
-
-@keyframes heartBeat {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
 }
