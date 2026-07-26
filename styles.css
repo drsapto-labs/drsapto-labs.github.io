@@ -396,18 +396,6 @@ header p {
   position: relative;
 }
 
-.carousel-track-container::before {
-  content: "";
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px;
-  height: 20px;
-  background-color: #000;
-  border-radius: 10px;
-  z-index: 10;
-}
 
 .carousel-track {
   list-style: none;
