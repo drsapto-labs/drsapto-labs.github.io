@@ -18,6 +18,41 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Dynamic design system variables */
+  --bg-glass: rgba(17, 24, 39, 0.4);
+  --bg-glass-hover: rgba(17, 24, 39, 0.6);
+  --bg-glass-solid: rgba(17, 24, 39, 0.6);
+  --bg-badges: rgba(10, 14, 23, 0.8);
+  --bg-pill: rgba(255, 255, 255, 0.03);
+  --bg-pill-hover: rgba(255, 255, 255, 0.06);
+  --btn-secondary-hover: rgba(255, 255, 255, 0.05);
+  --btn-disabled-bg: rgba(255, 255, 255, 0.03);
+  --theme-btn-bg: rgba(255, 255, 255, 0.05);
+  
+  --tag-default-bg: rgba(255, 255, 255, 0.06);
+  --tag-featured-bg: rgba(13, 148, 136, 0.15);
+  --tag-featured-border: rgba(13, 148, 136, 0.3);
+  --tag-featured-color: var(--primary-light);
+  
+  --tag-migration-bg: rgba(249, 115, 22, 0.1);
+  --tag-migration-border: rgba(249, 115, 22, 0.2);
+  --tag-migration-color: var(--secondary);
+
+  --gradient-text-start: #ffffff;
+  --gradient-text-end: var(--primary-light);
+  
+  --link-color: var(--primary-light);
+  --link-hover-color: var(--primary);
+  
+  --app-logo-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --app-logo-border: rgba(255, 255, 255, 0.05);
+  
+  --phone-border: rgba(255, 255, 255, 0.08);
+  --phone-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 0, 0, 0.2);
+  
+  --carousel-btn-bg: rgba(17, 24, 39, 0.8);
+  --carousel-btn-color: #ffffff;
 }
 
 body.light-mode {
@@ -31,6 +66,41 @@ body.light-mode {
   --border-color: rgba(15, 23, 42, 0.08);
   --teal-glow: rgba(13, 148, 136, 0.06);
   --orange-glow: rgba(249, 115, 22, 0.06);
+
+  /* Light mode values */
+  --bg-glass: rgba(255, 255, 255, 0.65);
+  --bg-glass-hover: rgba(255, 255, 255, 0.8);
+  --bg-glass-solid: rgba(255, 255, 255, 0.7);
+  --bg-badges: rgba(241, 245, 249, 0.85);
+  --bg-pill: rgba(15, 23, 42, 0.04);
+  --bg-pill-hover: rgba(15, 23, 42, 0.08);
+  --btn-secondary-hover: rgba(15, 23, 42, 0.05);
+  --btn-disabled-bg: rgba(15, 23, 42, 0.03);
+  --theme-btn-bg: rgba(15, 23, 42, 0.05);
+  
+  --tag-default-bg: rgba(15, 23, 42, 0.05);
+  --tag-featured-bg: rgba(13, 148, 136, 0.08);
+  --tag-featured-border: rgba(13, 148, 136, 0.2);
+  --tag-featured-color: var(--primary-dark);
+  
+  --tag-migration-bg: rgba(249, 115, 22, 0.08);
+  --tag-migration-border: rgba(249, 115, 22, 0.2);
+  --tag-migration-color: var(--secondary-hover);
+
+  --gradient-text-start: var(--text-primary);
+  --gradient-text-end: var(--primary-dark);
+  
+  --link-color: var(--primary);
+  --link-hover-color: var(--primary-dark);
+  
+  --app-logo-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --app-logo-border: rgba(15, 23, 42, 0.08);
+  
+  --phone-border: #1e293b;
+  --phone-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15), 0 0 30px rgba(15, 23, 42, 0.08);
+  
+  --carousel-btn-bg: rgba(255, 255, 255, 0.9);
+  --carousel-btn-color: var(--text-primary);
 }
 
 * {
@@ -96,7 +166,7 @@ header p {
 
 /* Profile Section Styles */
 .profile-section {
-  background-color: rgba(17, 24, 39, 0.6);
+  background-color: var(--bg-glass-solid);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
@@ -150,14 +220,14 @@ header p {
 }
 
 .profile-text a {
-  color: var(--primary-light);
+  color: var(--link-color);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .profile-text a:hover {
-  color: var(--primary);
+  color: var(--link-hover-color);
   text-decoration: underline;
 }
 
@@ -165,7 +235,7 @@ header p {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background-color: rgba(10, 14, 23, 0.8);
+  background-color: var(--bg-badges);
   padding: 30px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
@@ -194,7 +264,7 @@ header p {
 
 /* Featured Section */
 .featured-section {
-  background: radial-gradient(circle at bottom right, rgba(13, 148, 136, 0.1) 0%, rgba(17, 24, 39, 0.6) 80%);
+  background: radial-gradient(circle at bottom right, var(--teal-glow) 0%, var(--bg-glass-solid) 80%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
@@ -247,7 +317,7 @@ header p {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-pill);
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid var(--border-color);
@@ -258,7 +328,7 @@ header p {
 }
 
 .feature-pill:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: var(--bg-pill-hover);
   border-color: var(--primary-light);
   color: var(--text-primary);
   transform: translateY(-2px);
@@ -318,7 +388,7 @@ header p {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .store-btn-title {
@@ -343,7 +413,7 @@ header p {
 
 .privacy-btn:hover {
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--btn-secondary-hover);
   border-color: var(--text-secondary);
 }
 
@@ -371,13 +441,12 @@ header p {
 .carousel-track-container {
   overflow: hidden;
   border-radius: 36px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 0, 0, 0.2);
-  border: 4px solid var(--border-color);
+  box-shadow: var(--phone-shadow);
+  border: 4px solid var(--phone-border);
   background-color: #000;
   aspect-ratio: 9 / 19.5;
   position: relative;
 }
-
 
 .carousel-track {
   list-style: none;
@@ -401,9 +470,9 @@ header p {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(17, 24, 39, 0.8);
+  background-color: var(--carousel-btn-bg);
   border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  color: var(--carousel-btn-color);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -419,6 +488,7 @@ header p {
 .carousel-control-btn:hover {
   background-color: var(--primary);
   border-color: var(--primary-light);
+  color: #ffffff;
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -457,6 +527,15 @@ header p {
   border-radius: 4px;
 }
 
+/* Featured Logo Class */
+.featured-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  border: 1px solid var(--app-logo-border);
+  box-shadow: var(--app-logo-shadow);
+}
+
 /* Apps Grid */
 .section-title {
   text-align: center;
@@ -468,7 +547,7 @@ header p {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #ffffff 30%, var(--primary-light) 100%);
+  background: linear-gradient(135deg, var(--gradient-text-start) 30%, var(--gradient-text-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -482,7 +561,7 @@ header p {
 }
 
 .app-card {
-  background-color: rgba(17, 24, 39, 0.4);
+  background-color: var(--bg-glass);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
@@ -501,6 +580,7 @@ header p {
 
 .app-card:hover {
   transform: translateY(-5px);
+  background-color: var(--bg-glass-hover);
   border-color: rgba(20, 184, 166, 0.3);
   box-shadow: var(--shadow-xl), 0 0 30px rgba(13, 148, 136, 0.05);
 }
@@ -509,7 +589,7 @@ header p {
   position: absolute;
   top: 15px;
   right: 15px;
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: var(--tag-default-bg);
   border: 1px solid var(--border-color);
   padding: 4px 10px;
   border-radius: 99px;
@@ -521,15 +601,15 @@ header p {
 }
 
 .app-card-tag-featured {
-  background: rgba(13, 148, 136, 0.15);
-  border-color: rgba(13, 148, 136, 0.3);
-  color: var(--primary-light);
+  background: var(--tag-featured-bg);
+  border-color: var(--tag-featured-border);
+  color: var(--tag-featured-color);
 }
 
 .app-card-tag-migration {
-  background: rgba(249, 115, 22, 0.1);
-  border-color: rgba(249, 115, 22, 0.2);
-  color: var(--secondary);
+  background: var(--tag-migration-bg);
+  border-color: var(--tag-migration-border);
+  color: var(--tag-migration-color);
 }
 
 .app-logo {
@@ -539,8 +619,8 @@ header p {
   border-radius: 16px;
   margin-top: 15px;
   margin-bottom: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--app-logo-shadow);
+  border: 1px solid var(--app-logo-border);
 }
 
 .app-card-content {
@@ -578,7 +658,7 @@ header p {
   justify-content: center;
   gap: 8px;
   background-color: var(--primary);
-  color: var(--text-primary);
+  color: #ffffff;
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 10px;
@@ -603,20 +683,20 @@ header p {
 }
 
 .app-card-btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--btn-secondary-hover);
   border-color: var(--text-secondary);
   color: var(--text-primary);
 }
 
 .app-card-btn-disabled {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--btn-disabled-bg);
   border: 1px solid var(--border-color);
   color: var(--text-muted);
   cursor: not-allowed;
 }
 
 .app-card-btn-disabled:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--btn-disabled-bg);
   transform: none;
   box-shadow: none;
 }
@@ -658,7 +738,7 @@ footer .footer-heart {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--theme-btn-bg);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 10px;
@@ -699,11 +779,6 @@ header, section, .profile-section, .featured-section, .app-card, .profile-badges
 /* Header style override for light mode */
 body.light-mode header {
   background: radial-gradient(circle at top, rgba(20, 184, 166, 0.15) 0%, rgba(241, 255, 253, 0) 70%), var(--bg-secondary);
-}
-
-/* Additional specific overrides for light mode */
-body.light-mode .profile-badges {
-  background-color: rgba(255, 255, 255, 0.9);
 }
 
 body.light-mode .store-btn {
