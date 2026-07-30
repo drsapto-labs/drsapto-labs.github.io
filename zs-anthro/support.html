@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dukungan Pelanggan - dr. Sapto Anthro</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+        :root {
+            --primary: #0d9488;
+            --primary-light: #14b8a6;
+            --primary-dark: #0f766e;
+            --teal-glow: rgba(13, 148, 136, 0.15);
+        }
+        
+        .accent-gradient-bg {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+        }
+    </style>
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 10px var(--teal-glow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        body.light-mode .form-control {
+            background: rgba(15, 23, 42, 0.02);
+            color: var(--text-primary);
+        }
+        body.light-mode .form-control:focus {
+            background: rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+    </script>
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <header>
+        <a href="index.html" style="position: absolute; left: 20px; top: 20px; color: var(--text-primary); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
+        </a>
+        <h1>DUKUNGAN PELANGGAN</h1>
+        <p>dr. Sapto Anthro</p>
+    </header>
+
+    <div class="container" style="max-width: 700px;">
+        <section class="profile-section" style="padding: 40px; text-align: center;">
+            <i class="fa-solid fa-headset" style="font-size: 3rem; color: var(--primary-light); margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 10px;">Hubungi Kami</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                Mengalami kendala atau memiliki saran? Isi formulir di bawah ini untuk mengirimkan email dukungan ke tim pengembang <strong>dr. Sapto Labs</strong>.
+            </p>
+            
+            <form id="supportForm" onsubmit="handleSupportSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input type="text" id="name" class="form-control" placeholder="Masukkan nama Anda" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Alamat Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Masukkan email Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Subjek Masalah</label>
+                    <input type="text" id="subject" class="form-control" value="Dukungan: dr. Sapto Anthro" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Pesan / Detail Kendala</label>
+                    <textarea id="message" class="form-control" rows="6" placeholder="Jelaskan masalah atau masukan Anda di sini..." required></textarea>
+                </div>
+                
+                <button type="submit" class="app-card-btn" style="width: 100%; padding: 14px; font-size: 1rem;">
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan Dukungan
+                </button>
+            </form>
+        </section>
+        
+        <section class="profile-section" style="padding: 30px; margin-top: 30px;">
+            <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-circle-question" style="color: var(--primary-light); margin-right: 10px;"></i>Pertanyaan Umum (FAQ)</h3>
+            <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
+                <div>
+                    <h5 style="margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Apakah aplikasi ini memerlukan koneksi internet?</h5>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0;">Tidak. Aplikasi ini dirancang agar bekerja 100% offline secara lokal di perangkat Anda demi kenyamanan dan perlindungan data yang maksimal.</p>
+                </div>
+                <hr style="border: 0; border-top: 1px solid var(--border-color);">
+                <div>
+                    <h5 style="margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Bagaimana cara memperbarui aplikasi?</h5>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0;">Anda dapat memeriksa dan mengunduh pembaruan terbaru secara resmi langsung melalui toko aplikasi Google Play Store atau Apple App Store.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 DR SAPTO LABS. Dibuat dengan <i class="fa-solid fa-heart footer-heart"></i> di Lombok, Indonesia.</p>
+        <p>Hubungi: <a href="mailto:drsapto.labs@gmail.com">drsapto.labs@gmail.com</a></p>
+    </footer>
+
+    <script>
+        function handleSupportSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            const emailBody = `Nama: ${name}\nEmail Pengirim: ${email}\n\nDetail Pesan:\n${message}`;
+            const mailtoUrl = `mailto:drsapto.labs@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            // Open user's email client
+            window.location.href = mailtoUrl;
+        }
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const themeToggleIcon = themeToggleBtn.querySelector('i');
+            
+            // Sync icon state with current class on body
+            if (document.body.classList.contains('light-mode')) {
+                themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                let theme = 'dark';
+                if (document.body.classList.contains('light-mode')) {
+                    theme = 'light';
+                    themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                }
+                localStorage.setItem('theme', theme);
+            });
+        });
+    </script>
+    
+</body>
+
+</html>

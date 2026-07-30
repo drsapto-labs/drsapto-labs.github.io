@@ -20,6 +20,19 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+body.light-mode {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: rgba(15, 23, 42, 0.08);
+  --teal-glow: rgba(13, 148, 136, 0.06);
+  --orange-glow: rgba(249, 115, 22, 0.06);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -638,4 +651,76 @@ footer .footer-heart {
   color: #ef4444;
   margin: 0 2px;
   display: inline-block;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle-btn:hover {
+  background: var(--primary-light);
+  color: #ffffff;
+  transform: rotate(30deg) scale(1.1);
+  box-shadow: 0 0 15px var(--teal-glow);
+  border-color: var(--primary-light);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Base body transitions for smooth theme switching */
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+header, section, .profile-section, .featured-section, .app-card, .profile-badges, footer, .feature-pill, .store-btn, .privacy-btn, .app-card-btn {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Header style override for light mode */
+body.light-mode header {
+  background: radial-gradient(circle at top, rgba(20, 184, 166, 0.15) 0%, rgba(241, 255, 253, 0) 70%), var(--bg-secondary);
+}
+
+/* Additional specific overrides for light mode */
+body.light-mode .profile-badges {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+body.light-mode .store-btn {
+  background-color: #1e293b;
+}
+
+body.light-mode .store-btn:hover {
+  background-color: #0f172a;
+}
+
+/* Responsive adjustment for theme toggle button */
+@media (max-width: 600px) {
+  .theme-toggle-btn {
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
 }

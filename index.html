@@ -16,6 +16,17 @@
 </head>
 
 <body>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+    </script>
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+    </button>
 
     <header>
         <h1>DR SAPTO LABS</h1>
@@ -70,7 +81,7 @@
                         <img src="images/obstetric_calculator.png" alt="Dr. Sapto ObstetriCalc Logo" style="width: 72px; height: 72px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
                         <div>
                             <h3 class="gradient-text" style="margin-bottom: 2px; font-size: 1.8rem;">Dr. Sapto ObstetriCalc</h3>
-                            <p style="color: var(--primary-light); font-size: 0.95rem; font-weight: 600;">Kalkulator Usia Kehamilan & Pertumbuhan Janin</p>
+                            <p style="color: var(--primary-light); font-size: 0.95rem; font-weight: 600;">Medical</p>
                         </div>
                     </div>
                     
@@ -105,7 +116,7 @@
 
                     <div class="download-buttons">
                         <!-- App Store Link -->
-                        <a href="https://apps.apple.com/app/id6789321261" class="store-btn" target="_blank">
+                        <a href="https://apps.apple.com/app/id6789321261" class="store-btn" target="_blank" >
                             <i class="fa-brands fa-apple"></i>
                             <div class="store-btn-text">
                                 <span class="store-btn-subtitle">Download on the</span>
@@ -122,9 +133,9 @@
                             </div>
                         </a>
 
-                        <!-- Kebijakan Privasi -->
-                        <a href="obstetric-calculator-privacy.html" class="privacy-btn">
-                            <i class="fa-solid fa-user-shield" style="margin-right: 8px;"></i>Kebijakan Privasi
+                        <!-- Sub-landing Pages Links -->
+                        <a href="obstetric-calculator/" class="privacy-btn">
+                            <i class="fa-solid fa-circle-info" style="margin-right: 8px;"></i>Detail Aplikasi
                         </a>
                     </div>
                 </div>
@@ -137,12 +148,12 @@
                         </button>
                         <div class="carousel-track-container">
                             <ul class="carousel-track" id="carouselTrack">
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_01.png" alt="Dr. Sapto ObstetriCalc Screenshot 1"></li>
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_02.png" alt="Dr. Sapto ObstetriCalc Screenshot 2"></li>
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_03.png" alt="Dr. Sapto ObstetriCalc Screenshot 3"></li>
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_04.png" alt="Dr. Sapto ObstetriCalc Screenshot 4"></li>
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_05.png" alt="Dr. Sapto ObstetriCalc Screenshot 5"></li>
-                                <li class="carousel-slide"><img src="images/obstetric_calculator/slide_06.png" alt="Dr. Sapto ObstetriCalc Screenshot 6"></li>
+                                <li class="carousel-slide"><img src="images/obstetric-calculator/slide_01.jpg" alt="Dr. Sapto ObstetriCalc Slide 1"></li>
+<li class="carousel-slide"><img src="images/obstetric-calculator/slide_02.jpg" alt="Dr. Sapto ObstetriCalc Slide 2"></li>
+<li class="carousel-slide"><img src="images/obstetric-calculator/slide_03.jpg" alt="Dr. Sapto ObstetriCalc Slide 3"></li>
+<li class="carousel-slide"><img src="images/obstetric-calculator/slide_04.jpg" alt="Dr. Sapto ObstetriCalc Slide 4"></li>
+<li class="carousel-slide"><img src="images/obstetric-calculator/slide_05.jpg" alt="Dr. Sapto ObstetriCalc Slide 5"></li>
+<li class="carousel-slide"><img src="images/obstetric-calculator/slide_06.jpg" alt="Dr. Sapto ObstetriCalc Slide 6"></li>
                             </ul>
                         </div>
                         <button class="carousel-control-btn carousel-next-btn" id="nextBtn" aria-label="Slide berikutnya">
@@ -150,11 +161,11 @@
                         </button>
                         <div class="carousel-indicators" id="carouselIndicators">
                             <button class="carousel-dot active"></button>
-                            <button class="carousel-dot"></button>
-                            <button class="carousel-dot"></button>
-                            <button class="carousel-dot"></button>
-                            <button class="carousel-dot"></button>
-                            <button class="carousel-dot"></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
                         </div>
                     </div>
                 </div>
@@ -173,10 +184,28 @@
                     <p>Aplikasi stempel foto (Watermark) profesional dengan informasi EXIF lengkap, koordinat GPS, alamat, dan peta otomatis untuk kebutuhan dokumentasi.</p>
                 </div>
                 <div class="app-card-actions">
-                    <a href="https://play.google.com/store/apps/details?id=com.drsaptolabs.time_later" class="app-card-btn" target="_blank">
-                        <i class="fa-brands fa-google-play"></i> Google Play
+                    <a href="time-later/" class="app-card-btn">
+                        <i class="fa-solid fa-circle-info"></i> Info & Unduh
                     </a>
-                    <a href="timelater-privacy.html" class="app-card-btn app-card-btn-secondary">
+                    <a href="time-later/privacy.html" class="app-card-btn app-card-btn-secondary">
+                        Kebijakan Privasi
+                    </a>
+                </div>
+            </div>
+
+            <!-- App Card: QuickCollage -->
+            <div class="app-card">
+                <span class="app-card-tag app-card-tag-featured">Rilis</span>
+                <div class="app-card-content">
+                    <img src="images/quick_collage.png" alt="QuickCollage Logo" class="app-logo">
+                    <h3>QuickCollage</h3>
+                    <p>Aplikasi pembuat kolase foto instan dan cepat, dirancang khusus untuk membuat status WhatsApp dan media sosial menjadi lebih menarik.</p>
+                </div>
+                <div class="app-card-actions">
+                    <a href="quick-collage/" class="app-card-btn">
+                        <i class="fa-solid fa-circle-info"></i> Info & Unduh
+                    </a>
+                    <a href="quick-collage/privacy.html" class="app-card-btn app-card-btn-secondary">
                         Kebijakan Privasi
                     </a>
                 </div>
@@ -191,12 +220,12 @@
                     <p>Asisten pribadi instan untuk menyimpan dan mengirim data penting Anda secepat kilat. 100% Gratis, bekerja offline, dan aman di perangkat Anda.</p>
                 </div>
                 <div class="app-card-actions">
-                    <button class="app-card-btn app-card-btn-disabled" onclick="alert('Google Play Store Link: Sedang dalam proses review oleh Google!')">
+                    <a href="udasiap/" class="app-card-btn app-card-btn-secondary">
+                        <i class="fa-solid fa-clock"></i> Detail Rencana
+                    </a>
+                    <button class="app-card-btn app-card-btn-disabled" onclick="alert('Aplikasi sedang dalam proses review di Google Play / App Store!')">
                         <i class="fa-solid fa-hourglass-half"></i> Menunggu Review
                     </button>
-                    <a href="udasiap-privacy.html" class="app-card-btn app-card-btn-secondary">
-                        Kebijakan Privasi
-                    </a>
                 </div>
             </div>
 
@@ -292,20 +321,18 @@
             const dots = document.querySelectorAll('.carousel-dot');
             const slides = document.querySelectorAll('.carousel-slide');
             
+            if (!track || !prevBtn || !nextBtn || slides.length <= 1) return;
+            
             let currentIndex = 0;
             const slideCount = slides.length;
 
             const updateCarousel = (index) => {
-                // Batasi index
                 if (index < 0) index = slideCount - 1;
                 if (index >= slideCount) index = 0;
                 
                 currentIndex = index;
-                
-                // Geser track
                 track.style.transform = `translateX(-${currentIndex * 100}%)`;
                 
-                // Update indikator dot
                 dots.forEach((dot, idx) => {
                     if (idx === currentIndex) {
                         dot.classList.add('active');
@@ -315,7 +342,6 @@
                 });
             };
 
-            // Event Listeners
             prevBtn.addEventListener('click', () => {
                 updateCarousel(currentIndex - 1);
             });
@@ -330,23 +356,50 @@
                 });
             });
 
-            // Auto-play (opsional, setiap 5 detik)
             let autoPlayInterval = setInterval(() => {
                 updateCarousel(currentIndex + 1);
             }, 5000);
 
-            // Berhentikan auto-play jika di-hover atau di-klik manual
             const container = document.querySelector('.carousel-container');
-            container.addEventListener('mouseenter', () => {
-                clearInterval(autoPlayInterval);
-            });
-            container.addEventListener('mouseleave', () => {
-                autoPlayInterval = setInterval(() => {
-                    updateCarousel(currentIndex + 1);
-                }, 5000);
+            if (container) {
+                container.addEventListener('mouseenter', () => {
+                    clearInterval(autoPlayInterval);
+                });
+                container.addEventListener('mouseleave', () => {
+                    autoPlayInterval = setInterval(() => {
+                        updateCarousel(currentIndex + 1);
+                    }, 5000);
+                });
+            }
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const themeToggleIcon = themeToggleBtn.querySelector('i');
+            
+            // Sync icon state with current class on body
+            if (document.body.classList.contains('light-mode')) {
+                themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                let theme = 'dark';
+                if (document.body.classList.contains('light-mode')) {
+                    theme = 'light';
+                    themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                }
+                localStorage.setItem('theme', theme);
             });
         });
     </script>
+    
 </body>
 
 </html>

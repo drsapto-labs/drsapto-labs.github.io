@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Target Pemantauan Stunting - Dr. Sapto Anthro</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Aplikasi Batch Processor status gizi & target tumbuh kembang pekanan anak stunting kurang dari 2 tahun berbasis standar WHO LMS.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- SheetJS for Excel Reading/Writing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="brand">
+                <i class="fa-solid fa-calculator-medical brand-icon"></i>
+                <div>
+                    <h1>DR. SAPTO ANTHRO</h1>
+                    <p class="subtitle">Stunting Weekly Target Generator & Batch Processor</p>
+                </div>
+            </div>
+            <a href="../index.html" class="back-home-btn"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Pengantar / Alur Kerja -->
+        <section class="intro-section card animate-fade-in">
+            <h2><i class="fa-solid fa-circle-info text-primary"></i> Solusi Pemantauan Stunting 100+ Anak</h2>
+            <p>
+                Aplikasi ini dirancang khusus untuk mengatasi kesulitan dokter, bidan, dan perawat Puskesmas dalam menghitung 
+                <strong>Target Kejar Tumbuh (Catch-up Growth) Mingguan</strong> untuk ratusan anak yang menerima intervensi susu stunting.
+                Anda cukup mengunggah sheet data awal anak, dan sistem kami akan langsung mengeluarkan file Excel lengkap dengan target tinggi & berat badan mingguan selama 12 pekan.
+            </p>
+            <div class="alert-info">
+                <i class="fa-solid fa-lightbulb alert-icon"></i>
+                <div>
+                    <strong>Cara Kerja Google Sheets Tim:</strong> Unduh file target hasil generator ini, unggah ke Google Drive/Sheets Anda, 
+                    lalu bagikan linknya ke tim (Dokter, Bidan, Perawat, dan Kesling) untuk mencatat penimbangan mingguan dan kepatuhan intervensi susu secara real-time.
+                </div>
+            </div>
+        </section>
+
+        <!-- Area Upload & Pengaturan -->
+        <div class="grid-layout">
+            <!-- Upload Area -->
+            <section class="upload-section card animate-slide-up">
+                <h3><i class="fa-solid fa-file-excel text-success"></i> 1. Unggah Data Anak</h3>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                    <p class="drop-text">Tarik & lepas file Excel (.xlsx) di sini atau</p>
+                    <label for="excelFile" class="btn btn-primary">
+                        <i class="fa-solid fa-folder-open"></i> Pilih File Excel
+                    </label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
+                    <p class="file-info" id="fileInfo">Format file harus menyertakan kolom: Nama, JK, Tgl Lahir, Tgl Skrining, BB Awal, TB Awal</p>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary btn-sm" id="downloadTemplateBtn">
+                        <i class="fa-solid fa-download"></i> Unduh Template Excel Contoh
+                    </button>
+                </div>
+            </section>
+
+            <!-- Settings / Parameter Panel -->
+            <section class="settings-section card animate-slide-up" style="animation-delay: 0.1s;">
+                <h3><i class="fa-solid fa-sliders text-warning"></i> 2. Parameter Target Klinis</h3>
+                <div class="form-group">
+                    <label for="durationWeeks">Durasi Intervensi (Pekan)</label>
+                    <select id="durationWeeks" class="form-control">
+                        <option value="12" selected>12 Pekan (3 Bulan - Standar)</option>
+                        <option value="8">8 Pekan (2 Bulan)</option>
+                        <option value="16">16 Pekan (4 Bulan)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="targetHaz">Ambangan Pemulihan Stunting (HAZ / TB-U)</label>
+                    <select id="targetHaz" class="form-control">
+                        <option value="-2.0" selected>-2.0 SD (Normal - Ambang Batas WHO)</option>
+                        <option value="-1.95">-1.95 SD (Batas Aman Pemulihan)</option>
+                        <option value="-1.5">-1.5 SD (Target Tumbuh Optimal)</option>
+                    </select>
+                    <span class="help-block">Anak stunting (< -2 SD) ditargetkan mencapai nilai ini di akhir intervensi.</span>
+                </div>
+                <div class="form-group">
+                    <label for="targetWhz">Target Status Wasting (WHZ / BB-TB)</label>
+                    <select id="targetWhz" class="form-control">
+                        <option value="-2.0" selected>-2.0 SD (Gizi Baik - Batas Minimal)</option>
+                        <option value="-1.5">-1.5 SD (Ambang Aman)</option>
+                        <option value="-1.0">-1.0 SD (Optimal)</option>
+                    </select>
+                    <span class="help-block">Berat badan pekanan diatur agar proporsional dengan tinggi anak untuk mencegah wasting.</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- Dashboard Ringkasan & Tabel Hasil (Akan Muncul setelah upload) -->
+        <section class="results-section card hidden" id="resultsSection">
+            <div class="results-header">
+                <h2><i class="fa-solid fa-square-poll-vertical text-info"></i> Hasil Analisis & Target Pemantauan</h2>
+                <button class="btn btn-success" id="exportBtn">
+                    <i class="fa-solid fa-file-export"></i> Ekspor Excel Target Mingguan
+                </button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-title">Total Anak Dipantau</div>
+                    <div class="summary-value" id="statTotal">0</div>
+                    <div class="summary-desc">Anak usia di bawah 2 tahun</div>
+                </div>
+                <div class="summary-card text-danger">
+                    <div class="summary-title">Stunting Awal (HAZ < -2)</div>
+                    <div class="summary-value" id="statStunted">0</div>
+                    <div class="summary-desc" id="statStuntedPct">0% dari total anak</div>
+                </div>
+                <div class="summary-card text-warning">
+                    <div class="summary-title">Wasting/Kurang Awal (WHZ < -2)</div>
+                    <div class="summary-value" id="statWasted">0</div>
+                    <div class="summary-desc" id="statWastedPct">0% dari total anak</div>
+                </div>
+                <div class="summary-card text-success">
+                    <div class="summary-title">Rencana Selesai Stunting</div>
+                    <div class="summary-value" id="statNormalEnd">100%</div>
+                    <div class="summary-desc">Ditargetkan tercapai pada pekan terakhir</div>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="table-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Cari berdasarkan nama anak...">
+                </div>
+                <div class="filter-box">
+                    <label><i class="fa-solid fa-filter"></i> Filter Status:</label>
+                    <select id="statusFilter" class="form-control form-control-sm">
+                        <option value="all">Semua Anak</option>
+                        <option value="stunted">Hanya Stunting</option>
+                        <option value="normal">Hanya Normal</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-container">
+                <table id="childrenTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Anak</th>
+                            <th>L/P</th>
+                            <th>Tgl Lahir</th>
+                            <th>Usia (Bulan)</th>
+                            <th>BB Awal (kg)</th>
+                            <th>TB Awal (cm)</th>
+                            <th>ZS TB/U</th>
+                            <th>Status Awal</th>
+                            <th>Target PB Pekan 12</th>
+                            <th>Target BB Pekan 12</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data rows injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detailed Modal (Weekly Target Chart) -->
+    <div class="modal hidden" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalChildName">Nama Anak</h3>
+                    <p class="subtitle" id="modalChildInfo">Usia: 12 Bulan | Jenis Kelamin: Laki-laki</p>
+                </div>
+                <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-grid">
+                    <!-- Chart/Table of target weekly growth -->
+                    <div class="modal-table-container">
+                        <h4>Tabel Target Pertumbuhan Pekanan (Kejar Tumbuh)</h4>
+                        <table class="modal-table">
+                            <thead>
+                                <tr>
+                                    <th>Pekan</th>
+                                    <th>Target Panjang Badan (cm)</th>
+                                    <th>Target Berat Badan (kg)</th>
+                                    <th>Estimasi Kenaikan BB (g/pekan)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalTableBody">
+                                <!-- Weekly rows injected dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Clinical advice card -->
+                    <div class="advice-card">
+                        <h4><i class="fa-solid fa-stethoscope"></i> Catatan Rekomendasi Klinis</h4>
+                        <div class="advice-content" id="modalAdvice">
+                            <!-- Advice text injected dynamically -->
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-secondary btn-block" id="modalPrintBtn">
+                                <i class="fa-solid fa-print"></i> Cetak Lembar Rencana Anak
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 DR SAPTO LABS. Aplikasi Pemantauan Stunting &copy; dr. Sapto Sutardi. Lombok, Indonesia.</p>
+    </footer>
+
+    <!-- JS Files -->
+    <script src="lms_data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

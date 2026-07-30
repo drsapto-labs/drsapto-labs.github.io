@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sapto ObstetriCalc - Dr. Sapto Labs</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Asisten klinis yang elegan, modern, dan presisi untuk dokter kandungan, bidan, residen obstetri, dan praktisi kesehatan. Kalkulator Obstetri menyederhanakan perhitungan usia kehamilan dan pemantauan pertumbuhan janin secara visual & cepat.">
+    <meta name="keywords" content="medical, pregnancy, calculator, obstetric, dr sapto labs">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+        :root {
+            --primary: #0d9488;
+            --primary-light: #14b8a6;
+            --primary-dark: #0f766e;
+            --teal-glow: rgba(13, 148, 136, 0.15);
+        }
+        
+        .accent-gradient-bg {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+    </script>
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <header>
+        <a href="../index.html" style="position: absolute; left: 20px; top: 20px; color: var(--text-primary); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-arrow-left"></i> <span>Kembali ke Labs</span>
+        </a>
+        <h1>DR. SAPTO OBSTETRICALC</h1>
+        <p>Medical Utility App</p>
+    </header>
+
+    <div class="container">
+        <section class="featured-section">
+            <div class="featured-grid" style="grid-template-columns: 1.2fr 1fr;">
+                <div class="featured-details">
+                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                        <img src="../images/obstetric_calculator.png" alt="Dr. Sapto ObstetriCalc Logo" style="width: 80px; height: 80px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
+                        <div>
+                            <h3 class="gradient-text" style="margin-bottom: 2px; font-size: 2rem;">Dr. Sapto ObstetriCalc</h3>
+                            <p style="color: var(--primary-light); font-size: 0.95rem; font-weight: 600;">Paket ID: com.drsaptolabs.obstetric_calculator</p>
+                        </div>
+                    </div>
+                    
+                    <p class="featured-desc">Asisten klinis yang elegan, modern, dan presisi untuk dokter kandungan, bidan, residen obstetri, dan praktisi kesehatan. Kalkulator Obstetri menyederhanakan perhitungan usia kehamilan dan pemantauan pertumbuhan janin secara visual & cepat.</p>
+                    
+                    <h4 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-primary);">Fitur Utama:</h4>
+                    <div class="features-list">
+                <div class="feature-pill">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>3 Mode Kalkulasi (HPHT, USG, UK)</span>
+                </div>
+                <div class="feature-pill">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Evaluasi Berat Janin (TBJ/EFW)</span>
+                </div>
+                <div class="feature-pill">
+                    <i class="fa-solid fa-chart-area"></i>
+                    <span>Kurva Hadlock & Intergrowth-21st</span>
+                </div>
+                <div class="feature-pill">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Deteksi Deviasi Otomatis</span>
+                </div>
+                <div class="feature-pill">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>100% Offline & Sangat Privat</span>
+                </div>
+                <div class="feature-pill">
+                    <i class="fa-solid fa-moon"></i>
+                    <span>Mode Gelap & Terang Adaptif</span>
+                </div>
+                    </div>
+
+                    <div class="download-buttons">
+                        
+                <button class="store-btn" style="opacity:0.5; cursor:not-allowed;" disabled>
+                    <i class="fa-solid fa-toolbox"></i>
+                    <div class="store-btn-text">
+                        <span class="store-btn-subtitle">Ecosystem</span>
+                        <span class="store-btn-title">Proses Migrasi</span>
+                    </div>
+                </button>
+            
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <a href="support.html" class="privacy-btn">
+                            <i class="fa-solid fa-headset" style="margin-right: 8px;"></i>Dukungan Pelanggan (Support)
+                        </a>
+                        <a href="privacy.html" class="privacy-btn">
+                            <i class="fa-solid fa-user-shield" style="margin-right: 8px;"></i>Kebijakan Privasi
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Screenshots Carousel -->
+                <div class="featured-media" style="">
+                    <div class="carousel-container">
+                        <button class="carousel-control-btn carousel-prev-btn" id="prevBtn" aria-label="Slide sebelumnya">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <div class="carousel-track-container">
+                            <ul class="carousel-track" id="carouselTrack">
+                                <li class="carousel-slide"><img src="../images/obstetric-calculator/slide_01.jpg" alt="Dr. Sapto ObstetriCalc Slide 1"></li>
+<li class="carousel-slide"><img src="../images/obstetric-calculator/slide_02.jpg" alt="Dr. Sapto ObstetriCalc Slide 2"></li>
+<li class="carousel-slide"><img src="../images/obstetric-calculator/slide_03.jpg" alt="Dr. Sapto ObstetriCalc Slide 3"></li>
+<li class="carousel-slide"><img src="../images/obstetric-calculator/slide_04.jpg" alt="Dr. Sapto ObstetriCalc Slide 4"></li>
+<li class="carousel-slide"><img src="../images/obstetric-calculator/slide_05.jpg" alt="Dr. Sapto ObstetriCalc Slide 5"></li>
+<li class="carousel-slide"><img src="../images/obstetric-calculator/slide_06.jpg" alt="Dr. Sapto ObstetriCalc Slide 6"></li>
+                            </ul>
+                        </div>
+                        <button class="carousel-control-btn carousel-next-btn" id="nextBtn" aria-label="Slide berikutnya">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <div class="carousel-indicators" id="carouselIndicators">
+                            <button class="carousel-dot active"></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+<button class="carousel-dot "></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 DR SAPTO LABS. Dibuat dengan <i class="fa-solid fa-heart footer-heart"></i> di Lombok, Indonesia.</p>
+        <p>Hubungi: <a href="mailto:drsapto.labs@gmail.com">drsapto.labs@gmail.com</a></p>
+    </footer>
+
+    <!-- JavaScript untuk Screenshot Carousel -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('carouselTrack');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dots = document.querySelectorAll('.carousel-dot');
+            const slides = document.querySelectorAll('.carousel-slide');
+            
+            if (!track || !prevBtn || !nextBtn || slides.length <= 1) return;
+            
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            const updateCarousel = (index) => {
+                if (index < 0) index = slideCount - 1;
+                if (index >= slideCount) index = 0;
+                
+                currentIndex = index;
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                dots.forEach((dot, idx) => {
+                    if (idx === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            };
+
+            prevBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex + 1);
+            });
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    updateCarousel(idx);
+                });
+            });
+
+            let autoPlayInterval = setInterval(() => {
+                updateCarousel(currentIndex + 1);
+            }, 5000);
+
+            const container = document.querySelector('.carousel-container');
+            if (container) {
+                container.addEventListener('mouseenter', () => {
+                    clearInterval(autoPlayInterval);
+                });
+                container.addEventListener('mouseleave', () => {
+                    autoPlayInterval = setInterval(() => {
+                        updateCarousel(currentIndex + 1);
+                    }, 5000);
+                });
+            }
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const themeToggleIcon = themeToggleBtn.querySelector('i');
+            
+            // Sync icon state with current class on body
+            if (document.body.classList.contains('light-mode')) {
+                themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                let theme = 'dark';
+                if (document.body.classList.contains('light-mode')) {
+                    theme = 'light';
+                    themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                }
+                localStorage.setItem('theme', theme);
+            });
+        });
+    </script>
+    
+</body>
+
+</html>
