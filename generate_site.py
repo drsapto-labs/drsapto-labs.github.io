@@ -40,6 +40,13 @@ THEMES = {
         "glow": "rgba(236, 72, 153, 0.15)",
         "gradient": "linear-gradient(135deg, #db2777 0%, #ec4899 100%)"
     },
+    "Violet": {
+        "primary": "#8b5cf6",        # Royal Violet
+        "primary_light": "#a78bfa",
+        "primary_dark": "#6d28d9",
+        "glow": "rgba(139, 92, 246, 0.2)",
+        "gradient": "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)"
+    },
     "General": {
         "primary": "#0f766e",        # dark teal
         "primary_light": "#0d9488",
@@ -49,8 +56,13 @@ THEMES = {
     }
 }
 
-def get_theme(category):
-    return THEMES.get(category, THEMES["General"])
+def get_theme(app_or_category):
+    if isinstance(app_or_category, dict):
+        theme_key = app_or_category.get("theme")
+        if theme_key and theme_key in THEMES:
+            return THEMES[theme_key]
+        return THEMES.get(app_or_category.get("category", "General"), THEMES["General"])
+    return THEMES.get(app_or_category, THEMES["General"])
 
 def get_app_slug(app_id):
     """Convert app_id (snake_case) to URL friendly slug (hyphenated)"""
@@ -617,7 +629,7 @@ def main():
         os.makedirs(app_dir, exist_ok=True)
         
         # Accent Theme variables injection
-        theme = get_theme(app.get("category", "General"))
+        theme = get_theme(app)
         theme_style = f"""    <style>
         :root {{
             --primary: {theme['primary']};
