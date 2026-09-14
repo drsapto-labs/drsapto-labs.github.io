@@ -47,6 +47,20 @@ THEMES = {
         "glow": "rgba(139, 92, 246, 0.2)",
         "gradient": "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)"
     },
+    "Cyan": {
+        "primary": "#00e5ff",        # Neon Cyan
+        "primary_light": "#6effff",
+        "primary_dark": "#00b2cc",
+        "glow": "rgba(0, 229, 255, 0.2)",
+        "gradient": "linear-gradient(135deg, #00e5ff 0%, #a78bfa 100%)"
+    },
+    "Games": {
+        "primary": "#00e5ff",
+        "primary_light": "#6effff",
+        "primary_dark": "#00b2cc",
+        "glow": "rgba(0, 229, 255, 0.2)",
+        "gradient": "linear-gradient(135deg, #00e5ff 0%, #b026ff 100%)"
+    },
     "General": {
         "primary": "#0f766e",        # dark teal
         "primary_light": "#0d9488",
@@ -70,11 +84,21 @@ def get_app_slug(app_id):
 
 def process_screenshots(app_id, app_slug):
     """Find, resize, and compress screenshots from fastlane to landing page images folder."""
-    src_dir = os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/fastlane/screenshots/id")
-    if not os.path.exists(src_dir):
-        src_dir = os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/fastlane/screenshots/en-US")
-        
-    if not os.path.exists(src_dir):
+    candidates = [
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/playstore/dressed_ios/en"),
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/playstore/dressed_ios/id"),
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/ios/fastlane/screenshots/id"),
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/ios/fastlane/screenshots/en-US"),
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/fastlane/screenshots/id"),
+        os.path.join(SCRIPT_DIR, f"../Apps/{app_id}/fastlane/screenshots/en-US")
+    ]
+    src_dir = None
+    for cand in candidates:
+        if os.path.exists(cand) and any(f.startswith("slide_") for f in os.listdir(cand)):
+            src_dir = cand
+            break
+            
+    if not src_dir or not os.path.exists(src_dir):
         # Check if local screenshots folder already exists in the website directory
         local_img_dir = os.path.join(SCRIPT_DIR, f"images/{app_slug}")
         if os.path.exists(local_img_dir):
@@ -172,6 +196,9 @@ def get_privacy_content(app):
     elif category == "Productivity":
         data_use = f"Aplikasi <strong>{name}</strong> berfokus pada produktivitas Anda. Semua data pengaturan, riwayat fokus, atau catatan tersimpan secara aman di dalam penyimpanan lokal perangkat Anda (*SharedPreferences* atau database lokal). Kami tidak mengumpulkan statistik aktivitas Anda ke server eksternal."
         permissions = f"Aplikasi {name} dirancang mandiri:<br><ul><li><strong>Tidak memerlukan izin sensitif</strong> seperti lokasi atau kontak.</li><li><strong>Bekerja sepenuhnya offline</strong> tanpa perlu koneksi internet aktif.</li></ul>"
+    elif category == "Games":
+        data_use = f"Di <strong>DR SAPTO LABS</strong>, kami menghargai privasi dan kenyamanan bermain Anda. Aplikasi <strong>{name}</strong> tidak mengumpulkan, tidak melacak, dan tidak membagikan data pribadi, data analitik, maupun riwayat lemparan ke server mana pun.<br><br>Seluruh simulasi fisika 3D dan kalkulasi skor berjalan secara 100% lokal offline di perangkat Anda."
+        permissions = f"Aplikasi {name} dirancang mandiri & aman:<br><ul><li><strong>Tidak memerlukan akses internet</strong> untuk memainkan dadu 3D.</li><li><strong>Tidak memerlukan izin sensitif</strong> seperti lokasi, kontak, atau kamera.</li><li><strong>Bebas iklan pihak ketiga</strong> dan tanpa pelacak analitik.</li></ul>"
     else:
         data_use = f"Kami berkomitmen untuk menjaga privasi Anda. Aplikasi <strong>{name}</strong> bekerja secara lokal di perangkat Anda. Kami tidak mengumpulkan, menyimpan, atau membagikan informasi pribadi atau data penggunaan Anda kepada pihak ketiga mana pun."
         permissions = f"Aplikasi ini bekerja secara mandiri dan offline tanpa memerlukan izin sistem yang sensitif, kecuali jika secara eksplisit diminta dan disetujui untuk fitur khusus aplikasi."
