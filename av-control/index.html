@@ -50,6 +50,17 @@
         </div>
       </div>
 
+      <!-- Slide Navigator Controls (Kendali Halaman PDF) -->
+      <div id="slide-controls" class="slide-controls hidden">
+        <button class="btn-slide btn-prev" onclick="triggerSlideNav('PREV_SLIDE')">
+          <span>◀</span> Sebelumnya
+        </button>
+        <span class="slide-indicator">📄 Pindah Slide PDF</span>
+        <button class="btn-slide btn-next" onclick="triggerSlideNav('NEXT_SLIDE')">
+          Berikutnya <span>▶</span>
+        </button>
+      </div>
+
       <!-- Action Buttons -->
       <div class="controls-grid">
         <button id="btn-profile" class="btn btn-profile" onclick="triggerState('PROFILE')">

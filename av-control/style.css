@@ -423,3 +423,53 @@ h1 {
   line-height: 1.4;
   padding: 0 8px;
 }
+
+/* Slide Navigator Controls */
+.slide-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  transition: all var(--transition-fast);
+}
+
+.slide-controls.hidden {
+  display: none !important;
+}
+
+.btn-slide {
+  background: rgba(30, 41, 59, 0.95);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-slide:hover {
+  background: var(--primary-blue);
+  border-color: var(--accent-cyan);
+}
+
+.btn-slide:active {
+  transform: scale(0.95);
+}
+
+.slide-indicator {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

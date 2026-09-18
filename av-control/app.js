@@ -24,6 +24,7 @@ const lastOperator = document.getElementById('last-operator');
 const deviceIdentity = document.getElementById('device-identity');
 const channelInput = document.getElementById('channel-input');
 const transitionOverlay = document.getElementById('transition-overlay');
+const slideControls = document.getElementById('slide-controls');
 
 deviceIdentity.textContent = deviceId;
 channelInput.value = channelId;
@@ -133,6 +134,7 @@ function handleStatusUpdate(data) {
     stateIcon.className = 'state-icon profile-icon';
     btnProfile.classList.add('is-active');
     btnZoom.classList.remove('is-active');
+    if (slideControls) slideControls.classList.remove('hidden');
   } else {
     activeStateTitle.textContent = 'LIVE ZOOM MEETING';
     activeStateDesc.textContent = 'Layar Zoom aktif, Audio Zoom keluar di Speaker';
@@ -140,6 +142,7 @@ function handleStatusUpdate(data) {
     stateIcon.className = 'state-icon zoom-icon';
     btnZoom.classList.add('is-active');
     btnProfile.classList.remove('is-active');
+    if (slideControls) slideControls.classList.add('hidden');
   }
 
   // Sembunyikan overlay transisi
@@ -217,3 +220,19 @@ function updateChannel() {
 // Inisialisasi Aplikasi
 initMQTT();
 startHeartbeatWatchdog();
+
+
+function triggerSlideNav(direction) {
+  if (navigator.vibrate) {
+    navigator.vibrate(30);
+  }
+  const payload = {
+    target: direction,
+    operator: deviceId,
+    timestamp: Date.now()
+  };
+  const topics = getTopics();
+  if (client && client.connected) {
+    client.publish(topics.command, JSON.stringify(payload), { qos: 1 });
+  }
+}
