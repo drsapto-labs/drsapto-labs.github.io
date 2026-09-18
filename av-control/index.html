@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AV Controller - Remote Layar & Suara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- MQTT.js via CDN (Gratis & Ringan) -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Status -->
+    <header class="header-card">
+      <div class="brand">
+        <div class="logo-icon">📺</div>
+        <div>
+          <h1>AV Master Control</h1>
+          <p class="subtitle">Multi-User Screen & Audio Switcher</p>
+        </div>
+      </div>
+      
+      <div class="status-badge-container">
+        <div id="connection-badge" class="badge badge-offline">
+          <span class="dot"></span>
+          <span id="connection-text">Menghubungkan...</span>
+        </div>
+        <div id="laptop-badge" class="badge badge-pending">
+          <span class="dot"></span>
+          <span id="laptop-text">Laptop C: Menunggu Sinyal</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Live Monitor Display -->
+    <main class="monitor-card">
+      <div class="monitor-header">
+        <span class="monitor-tag">OUTPUT AKTIF SAAT INI</span>
+        <span id="last-updated" class="timestamp">--:--:--</span>
+      </div>
+
+      <div class="active-display-view">
+        <div id="state-icon" class="state-icon zoom-icon">👥</div>
+        <div class="state-info">
+          <h2 id="active-state-title">LIVE ZOOM MEETING</h2>
+          <p id="active-state-desc">Audio Zoom keluar di Speaker Ruangan</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="controls-grid">
+        <button id="btn-profile" class="btn btn-profile" onclick="triggerState('PROFILE')">
+          <div class="btn-icon">🏢</div>
+          <div class="btn-text">
+            <span class="btn-title">TAMPILKAN PROFIL</span>
+            <span class="btn-sub">Mute Zoom + Putar Video Profil</span>
+          </div>
+        </button>
+
+        <button id="btn-zoom" class="btn btn-zoom" onclick="triggerState('ZOOM')">
+          <div class="btn-icon">👥</div>
+          <div class="btn-text">
+            <span class="btn-title">KEMBALI KE ZOOM</span>
+            <span class="btn-sub">Tutup Profil + Suara Zoom Normal</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Lockout indicator saat transisi -->
+      <div id="transition-overlay" class="transition-overlay hidden">
+        <div class="spinner"></div>
+        <span>Mengeksekusi Pergantian Layar...</span>
+      </div>
+    </main>
+
+    <!-- System Telemetry & Room Info -->
+    <section class="info-card">
+      <div class="info-row">
+        <span class="label">ID Channel Tim:</span>
+        <div class="channel-box">
+          <input type="text" id="channel-input" value="ruang-sidang-utama" spellcheck="false">
+          <button class="btn-small" onclick="updateChannel()">Ubah</button>
+        </div>
+      </div>
+      <div class="info-row">
+        <span class="label">Perangkat Pengontrol:</span>
+        <span id="device-identity" class="value">Menentukan...</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Perintah Terakhir Oleh:</span>
+        <span id="last-operator" class="value text-highlight">-</span>
+      </div>
+    </section>
+
+    <!-- Footer Panduan -->
+    <footer class="footer">
+      <p>💡 <b>Tips:</b> Tombol ini dapat diakses serentak oleh Si A, Si B, dan Si C. Status otomatis tersinkronisasi dalam waktu &lt; 0.3 detik.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
