@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CV Star Brain Int - Company Profile 2023</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- MQTT.js via CDN untuk Remote Sync -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Main Slide Stage */
+    .stage {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 100%);
+    }
+
+    .slide-img {
+      max-width: 100vw;
+      max-height: 100vh;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+      opacity: 1;
+    }
+
+    .slide-img.fading {
+      opacity: 0.3;
+      transform: scale(0.99);
+    }
+
+    /* Top Floating Header (Auto-Hide) */
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(11, 15, 25, 0.85) 0%, transparent 100%);
+      backdrop-filter: blur(8px);
+      z-index: 20;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-sync {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-sync .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Bottom Control Bar (Auto-Hide) */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(0deg, rgba(11, 15, 25, 0.92) 0%, transparent 100%);
+      backdrop-filter: blur(8px);
+      z-index: 20;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(18, 24, 38, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 18px;
+      border-radius: 999px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--accent);
+    }
+
+    .btn-action:active {
+      transform: scale(0.92);
+    }
+
+    .page-counter {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 80px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Thumbnail Strip */
+    .thumb-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      max-width: 90vw;
+      padding: 4px 8px;
+      scrollbar-width: thin;
+    }
+
+    .thumb-item {
+      width: 54px;
+      height: 34px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      object-fit: cover;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+
+    .thumb-item:hover {
+      opacity: 0.85;
+    }
+
+    .thumb-item.active {
+      opacity: 1;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      transform: scale(1.08);
+    }
+
+    /* Auto-Hide Class */
+    .ui-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(20px);
+    }
+    .top-bar.ui-hidden {
+      transform: translateY(-20px);
+    }
+
+    /* Arrow click zones for touch/desktop */
+    .click-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 15%;
+      z-index: 10;
+      cursor: pointer;
+    }
+    .click-zone.left { left: 0; }
+    .click-zone.right { right: 0; }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header id="top-bar" class="top-bar">
+    <div class="brand-title">
+      <span>🏢 CV Star Brain Int</span>
+      <span style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">| Company Profile 2023 (ENG)</span>
+    </div>
+    <div class="badge-sync">
+      <span class="dot"></span>
+      <span id="remote-status">Remote Sync Aktif</span>
+    </div>
+  </header>
+
+  <!-- Main Stage -->
+  <main class="stage" id="stage">
+    <div class="click-zone left" id="zone-left" title="Klik untuk halaman sebelumnya"></div>
+    <img id="main-slide" src="slides/slide_1.webp" alt="Company Profile Slide" class="slide-img">
+    <div class="click-zone right" id="zone-right" title="Klik untuk halaman berikutnya"></div>
+  </main>
+
+  <!-- Bottom Bar Controls -->
+  <footer id="bottom-bar" class="bottom-bar">
+    <div class="controls-wrapper">
+      <button class="btn-action" id="btn-prev" title="Halaman Sebelumnya (Panah Kiri)">◀</button>
+      <span class="page-counter" id="counter">1 / 19</span>
+      <button class="btn-action" id="btn-next" title="Halaman Berikutnya (Panah Kanan / Spasi)">▶</button>
+      <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+      <button class="btn-action" id="btn-play" title="Putar Otomatis">⏯</button>
+      <button class="btn-action" id="btn-fs" title="Layar Penuh (F)">⛶</button>
+    </div>
+
+    <!-- Thumbnail Strip -->
+    <div class="thumb-strip" id="thumb-strip"></div>
+  </footer>
+
+  <script>
+    const TOTAL_PAGES = 19;
+    let currentPage = 1;
+    let isAutoPlaying = false;
+    let autoPlayTimer = null;
+    let hideTimeout = null;
+
+    const mainSlide = document.getElementById('main-slide');
+    const counter = document.getElementById('counter');
+    const topBar = document.getElementById('top-bar');
+    const bottomBar = document.getElementById('bottom-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnPlay = document.getElementById('btn-play');
+    const btnFs = document.getElementById('btn-fs');
+    const thumbStrip = document.getElementById('thumb-strip');
+    const remoteStatus = document.getElementById('remote-status');
+
+    // Preload next image
+    function preloadImage(pageNum) {
+      if (pageNum >= 1 && pageNum <= TOTAL_PAGES) {
+        const img = new Image();
+        img.src = `slides/slide_${pageNum}.webp`;
+      }
+    }
+
+    // Build Thumbnails
+    for (let i = 1; i <= TOTAL_PAGES; i++) {
+      const thumb = document.createElement('img');
+      thumb.src = `slides/slide_${i}.webp`;
+      thumb.className = `thumb-item ${i === 1 ? 'active' : ''}`;
+      thumb.alt = `Slide ${i}`;
+      thumb.onclick = () => goToPage(i);
+      thumbStrip.appendChild(thumb);
+    }
+
+    function goToPage(pageNum) {
+      if (pageNum < 1) pageNum = 1;
+      if (pageNum > TOTAL_PAGES) pageNum = TOTAL_PAGES;
+      if (pageNum === currentPage) return;
+
+      currentPage = pageNum;
+      mainSlide.classList.add('fading');
+      
+      setTimeout(() => {
+        mainSlide.src = `slides/slide_${currentPage}.webp`;
+        mainSlide.classList.remove('fading');
+        counter.textContent = `${currentPage} / ${TOTAL_PAGES}`;
+        
+        // Update Thumbnails
+        document.querySelectorAll('.thumb-item').forEach((item, idx) => {
+          if (idx + 1 === currentPage) {
+            item.classList.add('active');
+            item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        preloadImage(currentPage + 1);
+      }, 150);
+    }
+
+    function nextPage() {
+      if (currentPage < TOTAL_PAGES) {
+        goToPage(currentPage + 1);
+      } else if (isAutoPlaying) {
+        goToPage(1); // loop on autoplay
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        goToPage(currentPage - 1);
+      }
+    }
+
+    btnNext.onclick = nextPage;
+    btnPrev.onclick = prevPage;
+    document.getElementById('zone-right').onclick = nextPage;
+    document.getElementById('zone-left').onclick = prevPage;
+
+    // Autoplay toggle
+    btnPlay.onclick = () => {
+      isAutoPlaying = !isAutoPlaying;
+      btnPlay.style.color = isAutoPlaying ? 'var(--accent)' : 'var(--text)';
+      if (isAutoPlaying) {
+        autoPlayTimer = setInterval(nextPage, 5000);
+      } else {
+        clearInterval(autoPlayTimer);
+      }
+    };
+
+    // Fullscreen toggle
+    btnFs.onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    };
+
+    // Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevPage();
+      } else if (e.key === 'Home') {
+        goToPage(1);
+      } else if (e.key === 'End') {
+        goToPage(TOTAL_PAGES);
+      } else if (e.key.toLowerCase() === 'f') {
+        btnFs.click();
+      }
+      resetHideTimeout();
+    });
+
+    // Touch Swipe Support
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      resetHideTimeout();
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextPage(); // Swipe Left -> Next
+      } else if (touchEndX - touchStartX > 50) {
+        prevPage(); // Swipe Right -> Prev
+      }
+    }, { passive: true });
+
+    // UI Auto-Hide
+    function resetHideTimeout() {
+      topBar.classList.remove('ui-hidden');
+      bottomBar.classList.remove('ui-hidden');
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        topBar.classList.add('ui-hidden');
+        bottomBar.classList.add('ui-hidden');
+      }, 3500);
+    }
+
+    window.addEventListener('mousemove', resetHideTimeout);
+    resetHideTimeout();
+
+    // -------------------------------------------------------------
+    // REMOTE SYNC VIA CLOUD MQTT (Terhubung ke Controller HP A & B)
+    // -------------------------------------------------------------
+    const urlParams = new URLSearchParams(window.location.search);
+    const CHANNEL_ID = urlParams.get('channel') || localStorage.getItem('av_channel_id') || 'ruang-sidang-utama';
+    const BROKERS = [
+      'wss://broker.hivemq.com:8884/mqtt',
+      'wss://broker.emqx.io:8084/mqtt'
+    ];
+    let brokerIdx = 0;
+    let mqttClient = null;
+    let heartbeatInterval = null;
+
+    function reportStatus(targetState = 'PROFILE') {
+      if (mqttClient && mqttClient.connected) {
+        const payload = {
+          state: targetState,
+          slide: currentPage,
+          total: TOTAL_PAGES,
+          operator: 'Layar Web',
+          timestamp: Date.now()
+        };
+        mqttClient.publish(`avcontrol/${CHANNEL_ID}/status`, JSON.stringify(payload));
+      }
+    }
+
+    function sendHeartbeat() {
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(`avcontrol/${CHANNEL_ID}/heartbeat`, JSON.stringify({
+          status: 'ALIVE',
+          device: 'web_presentation',
+          slide: currentPage,
+          timestamp: Date.now()
+        }));
+      }
+    }
+
+    function connectMQTT() {
+      mqttClient = mqtt.connect(BROKERS[brokerIdx], {
+        clientId: `presentation_${Date.now().toString(36)}`,
+        clean: true
+      });
+
+      mqttClient.on('connect', () => {
+        remoteStatus.textContent = `Remote HP Terhubung (${CHANNEL_ID})`;
+        mqttClient.subscribe(`avcontrol/${CHANNEL_ID}/command`);
+        reportStatus('PROFILE');
+        sendHeartbeat();
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(sendHeartbeat, 3000);
+      });
+
+      mqttClient.on('message', (topic, message) => {
+        try {
+          const data = JSON.parse(message.toString());
+          if (data.target === 'NEXT_SLIDE') {
+            nextPage();
+            reportStatus('PROFILE');
+          } else if (data.target === 'PREV_SLIDE') {
+            prevPage();
+            reportStatus('PROFILE');
+          } else if (data.target === 'PROFILE') {
+            goToPage(1);
+            reportStatus('PROFILE');
+          } else if (data.target === 'ZOOM') {
+            reportStatus('ZOOM');
+          }
+        } catch (e) {
+          console.error('MQTT parse error:', e);
+        }
+      });
+
+      mqttClient.on('error', () => {
+        brokerIdx = (brokerIdx + 1) % BROKERS.length;
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        setTimeout(connectMQTT, 2500);
+      });
+
+      mqttClient.on('close', () => {
+        remoteStatus.textContent = 'Menghubungkan Ulang...';
+      });
+    }
+
+    connectMQTT();
+  </script>
+</body>
+</html>
