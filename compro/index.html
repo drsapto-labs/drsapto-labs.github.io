@@ -416,8 +416,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const CHANNEL_ID = urlParams.get('channel') || localStorage.getItem('av_channel_id') || 'ruang-sidang-utama';
     const BROKERS = [
-      'wss://broker.hivemq.com:8884/mqtt',
-      'wss://broker.emqx.io:8084/mqtt'
+      'wss://broker.emqx.io:8084/mqtt',
+      'wss://broker.hivemq.com:8884/mqtt'
     ];
     let brokerIdx = 0;
     let mqttClient = null;

@@ -37,8 +37,8 @@ let heartbeatChecker = null;
 
 // Multi-Broker Auto-Failover (HiveMQ + EMQX)
 const BROKER_URLS = [
-  "wss://broker.hivemq.com:8884/mqtt",
-  "wss://broker.emqx.io:8084/mqtt"
+  "wss://broker.emqx.io:8084/mqtt",
+  "wss://broker.hivemq.com:8884/mqtt"
 ];
 let currentBrokerIndex = 0;
 let client = null;
@@ -73,7 +73,7 @@ function initMQTT() {
 
   client.on("connect", () => {
     connectRetryCount = 0;
-    updateConnectionStatus("online", "Cloud Terhubung");
+    updateConnectionStatus("online", "Cloud Terhubung (EMQX)");
     const topics = getTopics();
     client.subscribe([topics.status, topics.heartbeat], (err) => {
       if (!err) {
