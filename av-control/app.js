@@ -127,7 +127,8 @@ function updateConnectionStatus(status, text) {
 function handleHeartbeat(data) {
   lastHeartbeatTime = Date.now();
   laptopBadge.className = "badge badge-online";
-  laptopText.textContent = "Laptop C: ONLINE (Aktif)";
+  const agentName = data.agent || data.device || "Laptop C";
+  laptopText.textContent = `${agentName}: ONLINE (Aktif)`;
 }
 
 // Watchdog memeriksa apakah laptop C mati/putus koneksi
