@@ -450,7 +450,10 @@
     function connectMQTT() {
       mqttClient = mqtt.connect(BROKERS[brokerIdx], {
         clientId: `presentation_${Date.now().toString(36)}`,
-        clean: true
+        clean: true,
+        keepalive: 15,
+        reconnectPeriod: 2000,
+        connectTimeout: 5000
       });
 
       mqttClient.on('connect', () => {
@@ -459,7 +462,7 @@
         reportStatus('PROFILE');
         sendHeartbeat();
         if (heartbeatInterval) clearInterval(heartbeatInterval);
-        heartbeatInterval = setInterval(sendHeartbeat, 3000);
+        heartbeatInterval = setInterval(sendHeartbeat, 2000);
       });
 
       mqttClient.on('message', (topic, message) => {

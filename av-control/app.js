@@ -64,16 +64,19 @@ function initMQTT() {
     }
   } catch(e) {}
 
+  const brokerName = currentBroker.includes("emqx") ? "EMQX" : "HiveMQ";
+
   client = mqtt.connect(currentBroker, {
     clientId: clientId,
     clean: true,
-    connectTimeout: 6000,
-    reconnectPeriod: 3000
+    connectTimeout: 5000,
+    reconnectPeriod: 2000,
+    keepalive: 15
   });
 
   client.on("connect", () => {
     connectRetryCount = 0;
-    updateConnectionStatus("online", "Cloud Terhubung (EMQX)");
+    updateConnectionStatus("online", "Cloud: " + brokerName + " (Online)");
     const topics = getTopics();
     client.subscribe([topics.status, topics.heartbeat], (err) => {
       if (!err) {
@@ -124,23 +127,38 @@ function updateConnectionStatus(status, text) {
   connectionText.textContent = text;
 }
 
+let lastKnownAgentName = "Laptop C";
+
 function handleHeartbeat(data) {
   lastHeartbeatTime = Date.now();
+  lastKnownAgentName = data.agent || data.device || lastKnownAgentName;
   laptopBadge.className = "badge badge-online";
-  const agentName = data.agent || data.device || "Laptop C";
-  laptopText.textContent = `${agentName}: ONLINE (Aktif)`;
+  laptopText.textContent = `${lastKnownAgentName}: ONLINE (Aktif)`;
 }
 
-// Watchdog memeriksa apakah laptop C mati/putus koneksi
+// Watchdog Hysteresis: Mencegah status 'putus-nyambung' karena jitter 4G/WiFi
 function startHeartbeatWatchdog() {
   if (heartbeatChecker) clearInterval(heartbeatChecker);
   heartbeatChecker = setInterval(() => {
-    const now = Date.now();
-    if (now - lastHeartbeatTime > 8000) {
-      laptopBadge.className = "badge badge-offline";
-      laptopText.textContent = "Laptop C: OFFLINE (Terputus)";
+    if (lastHeartbeatTime === 0) {
+      laptopBadge.className = "badge badge-pending";
+      laptopText.textContent = "Laptop C: Mencari Sinyal...";
+      return;
     }
-  }, 3000);
+    const elapsed = Date.now() - lastHeartbeatTime;
+    if (elapsed > 20000) {
+      // 20 detik tanpa sinyal -> Dinyatakan Offline
+      laptopBadge.className = "badge badge-offline";
+      laptopText.textContent = `${lastKnownAgentName}: OFFLINE (Terputus)`;
+    } else if (elapsed > 9000) {
+      // 9 - 20 detik -> Peringatan latensi/sinyal lemah tanpa merusak tampilan
+      laptopBadge.className = "badge badge-pending";
+      laptopText.textContent = `${lastKnownAgentName}: Sinyal Lemah...`;
+    } else {
+      laptopBadge.className = "badge badge-online";
+      laptopText.textContent = `${lastKnownAgentName}: ONLINE (Aktif)`;
+    }
+  }, 2000);
 }
 
 function handleStatusUpdate(data) {
@@ -252,3 +270,51 @@ function updateChannel() {
 // Inisialisasi Aplikasi
 initMQTT();
 startHeartbeatWatchdog();
+
+// -------------------------------------------------------------
+// SCREEN WAKE LOCK API (Mencegah Layar HP Tidur / Sleep)
+// -------------------------------------------------------------
+let wakeLock = null;
+const wakeLockBadge = document.getElementById("wakelock-badge");
+
+async function requestWakeLock() {
+  try {
+    if ("wakeLock" in navigator) {
+      wakeLock = await navigator.wakeLock.request("screen");
+      if (wakeLockBadge) {
+        wakeLockBadge.style.display = "inline-flex";
+      }
+      wakeLock.addEventListener("release", () => {
+        if (wakeLockBadge) wakeLockBadge.style.display = "none";
+      });
+      console.log("[WAKELOCK] Layar HP dijaga tetap aktif.");
+    }
+  } catch (err) {
+    console.log("[WAKELOCK] Dibatasi atau tidak didukung:", err);
+  }
+}
+
+// Otomatis minta ulang WakeLock & Reconnect MQTT saat tab aktif kembali
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState === "visible") {
+    await requestWakeLock();
+    if (!client || !client.connected) {
+      console.log("[RESUME] Tab kembali aktif, menyinkronkan ulang MQTT...");
+      initMQTT();
+    }
+  }
+});
+
+window.addEventListener("online", () => {
+  console.log("[NETWORK] Internet aktif kembali, menghubungkan MQTT...");
+  initMQTT();
+});
+
+window.addEventListener("focus", () => {
+  if (!client || !client.connected) {
+    initMQTT();
+  }
+});
+
+// Inisialisasi WakeLock
+requestWakeLock();
