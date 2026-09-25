@@ -43,8 +43,13 @@ except Exception:
     HAS_KEYBOARD = False
 
 # Import GUI Tkinter bawaan Python untuk Floating Widget
-import tkinter as tk
-from tkinter import ttk
+HAS_TKINTER = False
+try:
+    import tkinter as tk
+    from tkinter import ttk
+    HAS_TKINTER = True
+except Exception:
+    HAS_TKINTER = False
 
 # ==========================================
 # KONFIGURASI SISTEM
@@ -145,15 +150,16 @@ class WindowsAVAgent:
         if self.current_state == "PROFILE":
             return
         
-        print(f"\n[AKSI] >>> MENAMPILKAN PROFIL PERUSAHAAN (Dipicu oleh: {operator_name}) <<<")
+        print(f"\n[AKSI] >>> MENAMPILKAN SLIDE WORKSHOP ZUHRIYAH (Dipicu oleh: {operator_name}) <<<")
         self.current_state = "PROFILE"
 
         # 1. Matikan suara Zoom seketika
         self.set_zoom_audio_mute(True)
 
         # 2. Buka Pemutar Fullscreen Kiosk Mode (Edge Kiosk - Bawaan Windows 11)
-        pdf_file = MEDIA_DIR / "profil_perusahaan.pdf"
-        video_file = MEDIA_DIR / "profil_perusahaan.mp4"
+        zuhriyah_local = BASE_DIR / "zuhriyah" / "index.html"
+        pdf_file = MEDIA_DIR / "workshop_zuhriyah.pdf"
+        video_file = MEDIA_DIR / "workshop_zuhriyah.mp4"
 
         edge_path = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
         if not Path(edge_path).exists():
@@ -164,22 +170,19 @@ class WindowsAVAgent:
             if self.kiosk_process and self.kiosk_process.poll() is None:
                 self.kiosk_process.kill()
 
-            # Prioritas 1: Jika ada file PDF (Slide Deck Canva / Dokumen)
-            if pdf_file.exists():
+            # Prioritas 1: Slide Workshop Digital Zuhriyah Institut Lokal (Offline)
+            if zuhriyah_local.exists():
+                target_url = f"file:///{zuhriyah_local.as_posix()}"
+                print(f"[LAYAR] Slide Workshop Zuhriyah Offline ({zuhriyah_local.name}) berhasil dibuka Fullscreen.")
+            elif pdf_file.exists():
                 target_url = f"file:///{pdf_file.as_posix()}"
-                cmd = f'"{edge_path}" --kiosk "{target_url}" --edge-kiosk-type=fullscreen --no-first-run'
-                self.kiosk_process = subprocess.Popen(cmd, shell=True)
-                print(f"[LAYAR] Dokumen PDF Profil ({pdf_file.name}) berhasil dibuka Fullscreen.")
-            elif video_file.exists():
-                target_url = f"file:///{PLAYER_HTML.as_posix()}"
-                cmd = f'"{edge_path}" --kiosk "{target_url}" --edge-kiosk-type=fullscreen --no-first-run --disable-pinch'
-                self.kiosk_process = subprocess.Popen(cmd, shell=True)
-                print(f"[LAYAR] Video Profil ({video_file.name}) berhasil dibuka Fullscreen.")
+                print(f"[LAYAR] Dokumen PDF Workshop ({pdf_file.name}) berhasil dibuka Fullscreen.")
             else:
-                target_url = f"file:///{PLAYER_HTML.as_posix()}"
-                cmd = f'"{edge_path}" --kiosk "{target_url}" --edge-kiosk-type=fullscreen --no-first-run'
-                self.kiosk_process = subprocess.Popen(cmd, shell=True)
-                print("[LAYAR] Menampilkan slide demo profil bawaan.")
+                target_url = "https://drsapto-labs.github.io/zuhriyah/"
+                print(f"[LAYAR] Slide Workshop Zuhriyah Cloud ({target_url}) berhasil dibuka Fullscreen.")
+
+            cmd = f'"{edge_path}" --kiosk "{target_url}" --edge-kiosk-type=fullscreen --no-first-run'
+            self.kiosk_process = subprocess.Popen(cmd, shell=True)
         except Exception as e:
             print(f"[ERROR] Gagal membuka profil: {e}")
             if pdf_file.exists():
@@ -235,55 +238,103 @@ class WindowsAVAgent:
             pass
 
     # ------------------------------------------------------------------
-    # JALUR KOMUNIKASI CLOUD MQTT REALTIME
+    # JALUR KOMUNIKASI CLOUD MQTT REALTIME (AUTO-FAILOVER & FIREWALL PROOF)
     # ------------------------------------------------------------------
     def setup_mqtt(self):
-        client_id = f"agent_laptop_c_{int(time.time())}"
+        self.brokers = [
+            {"name": "EMQX Cloud (TCP)", "host": "broker.emqx.io", "port": 1883, "transport": "tcp"},
+            {"name": "HiveMQ Cloud (Secure WSS)", "host": "broker.hivemq.com", "port": 8884, "transport": "websockets", "path": "/mqtt", "tls": True},
+            {"name": "EMQX Cloud (Secure WSS)", "host": "broker.emqx.io", "port": 8084, "transport": "websockets", "path": "/mqtt", "tls": True},
+            {"name": "HiveMQ Cloud (TCP)", "host": "broker.hivemq.com", "port": 1883, "transport": "tcp"}
+        ]
+        self.current_broker_idx = 0
+        self.is_mqtt_connected = False
+        self.mqtt_client = None
+        self.connect_broker()
+
+    def connect_broker(self):
+        b = self.brokers[self.current_broker_idx]
+        transport = b.get("transport", "tcp")
+        client_id = f"win_agent_c_{int(time.time())}_{os.getpid()}"
+        print(f"[CLOUD] Menghubungkan ke {b['name']} ({b['host']}:{b['port']})...")
+
         try:
             if hasattr(mqtt, "CallbackAPIVersion"):
-                self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=client_id, clean_session=True)
+                self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=client_id, clean_session=True, transport=transport)
             else:
-                self.mqtt_client = mqtt.Client(client_id=client_id, clean_session=True)
+                self.mqtt_client = mqtt.Client(client_id=client_id, clean_session=True, transport=transport)
         except Exception:
             try:
-                self.mqtt_client = mqtt.Client(client_id=client_id)
+                self.mqtt_client = mqtt.Client(client_id=client_id, transport=transport)
             except Exception as e:
                 print(f"[ERROR] Inisialisasi client gagal: {e}")
+                return
+
+        if transport == "websockets" and b.get("path"):
+            self.mqtt_client.ws_set_options(path=b["path"])
+        if b.get("tls"):
+            try:
+                self.mqtt_client.tls_set()
+            except Exception as e:
+                print(f"[WARNING] Gagal setup TLS: {e}")
 
         self.mqtt_client.on_connect = self.on_mqtt_connect
         self.mqtt_client.on_message = self.on_mqtt_message
         self.mqtt_client.on_disconnect = self.on_mqtt_disconnect
 
-        brokers = [
-            ("broker.hivemq.com", 1883),
-            ("broker.emqx.io", 1883)
-        ]
-        connected = False
-        for host, port in brokers:
-            try:
-                print(f"[CLOUD] Menghubungkan ke Broker MQTT: {host}:{port}...")
-                self.mqtt_client.connect(host, port, keepalive=60)
-                self.mqtt_client.loop_start()
-                connected = True
-                print(f"[CLOUD] Terhubung ke {host}!")
-                break
-            except Exception as e:
-                print(f"[WARNING] Gagal terhubung ke {host}:{port}: {e}")
+        try:
+            self.mqtt_client.connect(b["host"], b["port"], keepalive=15)
+            self.mqtt_client.loop_start()
 
-        if not connected:
-            print("[ERROR] Tidak dapat terhubung ke broker MQTT. Periksa koneksi internet Anda.")
+            # Watchdog 4 detik: jika belum connect, coba broker cadangan
+            def watchdog():
+                time.sleep(4)
+                if not self.is_mqtt_connected and self.is_running:
+                    print(f"[CLOUD] Timeout pada {b['name']}, beralih ke broker cadangan...")
+                    self.switch_broker()
+            threading.Thread(target=watchdog, daemon=True).start()
+
+        except Exception as e:
+            print(f"[WARNING] Gagal terhubung ke {b['name']}: {e}")
+            self.switch_broker()
+
+    def switch_broker(self):
+        if self.mqtt_client:
+            try:
+                self.mqtt_client.loop_stop()
+                self.mqtt_client.disconnect()
+            except Exception:
+                pass
+        self.is_mqtt_connected = False
+        self.current_broker_idx = (self.current_broker_idx + 1) % len(self.brokers)
+        time.sleep(1.5)
+        self.connect_broker()
 
     def on_mqtt_connect(self, client, userdata, flags, rc, *args):
         if rc == 0:
-            print(f"[CLOUD] Berhasil Terhubung! Berlangganan ke topik perintah: {TOPIC_COMMAND}")
+            self.is_mqtt_connected = True
+            self.disconnect_count = 0
+            b = self.brokers[self.current_broker_idx]
+            print(f"================================================================")
+            print(f" [SUKSES] TERHUBUNG KE CLOUD VIA: {b['name']}")
+            print(f" Siap menerima kendali dari HP Si A & Si B!")
+            print(f"================================================================")
             client.subscribe(TOPIC_COMMAND, qos=1)
             self.broadcast_status("Inisialisasi Sistem")
         else:
             print(f"[ERROR] Koneksi MQTT ditolak dengan kode: {rc}")
+            self.switch_broker()
 
     def on_mqtt_disconnect(self, client, userdata, rc, *args):
-        if rc != 0:
-            print(f"[CLOUD] Koneksi MQTT terputus (kode: {rc}). Sistem otomatis mencoba menghubungkan ulang...")
+        if rc != 0 and self.is_running:
+            self.is_mqtt_connected = False
+            self.disconnect_count = getattr(self, 'disconnect_count', 0) + 1
+            if self.disconnect_count >= 2:
+                self.disconnect_count = 0
+                print(f"[CLOUD] Koneksi terputus berulang (kode: {rc}). Beralih ke jalur cadangan...")
+                self.switch_broker()
+            else:
+                print(f"[CLOUD] Sinyal terputus sesaat (kode: {rc}). Menyambung ulang otomatis...")
 
     def next_slide(self):
         """Kirim tombol Right Arrow / Page Down ke layar PDF"""
@@ -332,12 +383,15 @@ class WindowsAVAgent:
             self.mqtt_client.publish(TOPIC_STATUS, json.dumps(data), qos=1)
 
     def heartbeat_loop(self):
-        """Mengirim detak jantung berkala tiap 3 detik agar Web tahu laptop C aktif"""
+        """Mengirim detak jantung berkala tiap 2 detik agar Web tahu laptop C aktif stabil"""
         while self.is_running:
-            if self.mqtt_client and self.mqtt_client.is_connected():
+            if self.mqtt_client and self.is_mqtt_connected:
                 hb = {"agent": "Windows 11 Laptop C", "status": "ONLINE", "time": time.time()}
-                self.mqtt_client.publish(TOPIC_HEARTBEAT, json.dumps(hb), qos=0)
-            time.sleep(3)
+                try:
+                    self.mqtt_client.publish(TOPIC_HEARTBEAT, json.dumps(hb), qos=0)
+                except Exception:
+                    pass
+            time.sleep(2.0)
 
     # ------------------------------------------------------------------
     # HOTKEY DARURAT OFFLINE (UNTUK SI C)
@@ -423,7 +477,7 @@ class WindowsAVAgent:
     def update_widget_ui(self):
         if self.widget_root and hasattr(self, 'lbl_status'):
             if self.current_state == "PROFILE":
-                self.lbl_status.config(text="● PROFIL AKTIF (ZOOM MUTE)", fg="#34d399")
+                self.lbl_status.config(text="● SLIDE ZUHRIYAH (ZOOM MUTE)", fg="#34d399")
             else:
                 self.lbl_status.config(text="● LIVE ZOOM MEETING", fg="#38bdf8")
 
@@ -439,5 +493,15 @@ if __name__ == "__main__":
 
     agent = WindowsAVAgent()
     
-    # Jalankan floating widget di main thread
-    agent.create_floating_widget()
+    # Jalankan floating widget di main thread jika tersedia
+    if HAS_TKINTER:
+        try:
+            agent.create_floating_widget()
+        except Exception as e:
+            print(f"[INFO] Widget mini tidak aktif ({e}). Mode konsol aktif.")
+            while True:
+                time.sleep(1)
+    else:
+        print("[INFO] Berjalan dalam mode konsol. Tekan Ctrl+C untuk keluar.")
+        while True:
+            time.sleep(1)

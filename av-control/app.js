@@ -167,9 +167,9 @@ function handleStatusUpdate(data) {
   updateTimestamp();
 
   if (currentState === "PROFILE") {
-    activeStateTitle.textContent = "PROFIL PERUSAHAAN AKTIF";
-    activeStateDesc.textContent = "Audio Zoom dimatikan, Dokumen Profil tampil di Layar";
-    stateIcon.textContent = "🏢";
+    activeStateTitle.textContent = "SLIDE WORKSHOP ZUHRIYAH AKTIF";
+    activeStateDesc.textContent = "Audio Zoom dimatikan, Slide Workshop tampil di Layar";
+    stateIcon.textContent = "🎓";
     stateIcon.className = "state-icon profile-icon";
     btnProfile.classList.add("is-active");
     btnZoom.classList.remove("is-active");
