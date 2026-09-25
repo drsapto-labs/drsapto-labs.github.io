@@ -1076,6 +1076,7 @@
     let currentPage = 1;
     const totalPages = SLIDES.length;
     let hideTimeout = null;
+    let lastSlideBeforeZoom = null;
 
     const slideContainer = document.getElementById('slide-container');
     const counter = document.getElementById('counter');
@@ -1286,8 +1287,17 @@
             nextPage();
           } else if (data.target === 'PREV_SLIDE') {
             prevPage();
+          } else if (data.target === 'ZOOM') {
+            // Simpan slide terakhir sebelum beralih ke Zoom
+            lastSlideBeforeZoom = currentPage;
           } else if (data.target === 'PROFILE') {
-            goToPage(1);
+            // Jika switch dari Zoom ke Slide: otomatis tampilkan slide terakhir + 1
+            if (lastSlideBeforeZoom !== null) {
+              const targetPage = Math.min(totalPages, lastSlideBeforeZoom + 1);
+              goToPage(targetPage);
+            } else {
+              goToPage(1);
+            }
           }
         } catch (e) {
           console.error('MQTT error:', e);
