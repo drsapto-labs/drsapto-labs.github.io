@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zuhriyah Institut - Workshop Digital (26-27 September 2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- MQTT.js via CDN untuk Remote Sync HP -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <style>
+    :root {
+      --bg-deep: #022047;
+      --bg-main: #03306b;
+      --bg-card: rgba(0, 74, 173, 0.35);
+      --bg-card-hover: rgba(0, 74, 173, 0.55);
+      --border-card: rgba(56, 189, 248, 0.3);
+      --border-glow: rgba(56, 189, 248, 0.6);
+      --accent-gold: #f6b50c;
+      --accent-gold-glow: rgba(246, 181, 12, 0.4);
+      --accent-cyan: #38bdf8;
+      --accent-blue: #004aad;
+      --text-white: #ffffff;
+      --text-light: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-deep);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Background Geometric Blueprint Theme */
+    .bg-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(0, 74, 173, 0.5) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(246, 181, 12, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(3, 48, 107, 0.8) 0%, #022047 100%);
+      z-index: 0;
+    }
+
+    /* Blueprint Grid Overlay */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header Bar */
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2, 32, 71, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      z-index: 50;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-institute {
+      background: linear-gradient(135deg, var(--accent-gold), #d97706);
+      color: #022047;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .badge-sync {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #34d399;
+    }
+
+    .badge-sync .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Main Slide Stage */
+    .stage {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      padding: 70px 40px 90px 40px;
+    }
+
+    .slide-container {
+      width: 100%;
+      max-width: 1360px;
+      height: 100%;
+      max-height: 780px;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      background: rgba(3, 48, 107, 0.4);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .slide-container.fading {
+      opacity: 0;
+      transform: scale(0.985);
+    }
+
+    /* Cover Slide */
+    .cover-view {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #03306b;
+    }
+
+    .cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Slide Content Layout */
+    .slide-body {
+      width: 100%;
+      height: 100%;
+      padding: 44px 52px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .slide-header .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(246, 181, 12, 0.15);
+      border: 1px solid rgba(246, 181, 12, 0.4);
+      color: var(--accent-gold);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .slide-header h1 {
+      font-size: 2.1rem;
+      font-weight: 900;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-header p.subhead {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* Bento Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    .grid-split {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    /* Card Components */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .card-gold {
+      background: rgba(246, 181, 12, 0.08);
+      border-color: rgba(246, 181, 12, 0.35);
+    }
+    .card-gold:hover {
+      border-color: var(--accent-gold);
+      box-shadow: 0 8px 24px var(--accent-gold-glow);
+    }
+
+    .card-cyan {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card .pill {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-cyan);
+      align-self: flex-start;
+    }
+
+    /* Comparison Table Style */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-card);
+    }
+
+    .compare-table th {
+      background: rgba(0, 74, 173, 0.6);
+      color: var(--accent-gold);
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .compare-table td {
+      background: rgba(3, 48, 107, 0.3);
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      color: var(--text-light);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+      line-height: 1.45;
+    }
+
+    .compare-table tr:hover td {
+      background: rgba(0, 74, 173, 0.35);
+    }
+
+    /* Step Timeline Horizontal */
+    .step-timeline {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .step-item {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .step-item .num {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gold);
+      color: #022047;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .step-item h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .step-item p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Banner Quote Footer */
+    .banner-quote {
+      margin-top: 20px;
+      background: linear-gradient(90deg, rgba(0, 74, 173, 0.5), rgba(246, 181, 12, 0.15));
+      border: 1px solid rgba(246, 181, 12, 0.4);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .banner-quote span.icon {
+      font-size: 1.6rem;
+    }
+
+    .banner-quote p {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fef08a;
+    }
+
+    /* Bottom Control Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2, 32, 71, 0.9);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      z-index: 50;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      transform: scale(1.05);
+    }
+
+    .page-counter {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      padding: 0 8px;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    /* Thumbnails Drawer */
+    .thumb-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px;
+      max-width: 60%;
+    }
+
+    .thumb-strip::-webkit-scrollbar {
+      height: 4px;
+    }
+    .thumb-strip::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 4px;
+    }
+
+    .thumb-btn {
+      flex-shrink: 0;
+      width: 52px;
+      height: 30px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 74, 173, 0.4);
+      color: #cbd5e1;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .thumb-btn:hover {
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    .thumb-btn.active {
+      background: var(--accent-gold);
+      color: #022047;
+      border-color: #ffffff;
+      box-shadow: 0 0 10px var(--accent-gold-glow);
+    }
+
+    /* UI Auto-Hide Class */
+    .ui-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(20px);
+    }
+    .top-bar.ui-hidden {
+      transform: translateY(-20px);
+    }
+
+    /* Click Zones */
+    .click-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 12%;
+      z-index: 20;
+      cursor: pointer;
+    }
+    .click-zone.left { left: 0; }
+    .click-zone.right { right: 0; }
+  </style>
+</head>
+<body>
+  <div class="bg-canvas"></div>
+  <div class="bg-grid"></div>
+
+  <!-- Top Navigation Header -->
+  <header id="top-bar" class="top-bar">
+    <div class="brand-title">
+      <span class="badge-institute">ZUHRIYAH INSTITUT</span>
+      <span>WORKSHOP DIGITAL: Perempuan Cerdas & Kreatif</span>
+    </div>
+    <div class="badge-sync">
+      <span class="dot"></span>
+      <span id="remote-status">Remote Sync Aktif</span>
+    </div>
+  </header>
+
+  <!-- Main Presentation Stage -->
+  <main class="stage" id="stage">
+    <div class="click-zone left" id="zone-left" title="Klik untuk slide sebelumnya"></div>
+    
+    <div class="slide-container" id="slide-container">
+      <!-- Dynamic Slide Content rendered via JS -->
+    </div>
+
+    <div class="click-zone right" id="zone-right" title="Klik untuk slide berikutnya"></div>
+  </main>
+
+  <!-- Bottom Control Bar -->
+  <footer id="bottom-bar" class="bottom-bar">
+    <div class="controls-wrapper">
+      <button class="btn-action" id="btn-prev" title="Slide Sebelumnya (Panah Kiri)">◀</button>
+      <span class="page-counter" id="counter">1 / 14</span>
+      <button class="btn-action" id="btn-next" title="Slide Berikutnya (Panah Kanan / Spasi)">▶</button>
+      <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2);"></div>
+      <button class="btn-action" id="btn-fs" title="Layar Penuh (F)">⛶</button>
+    </div>
+
+    <!-- Thumbnails Strip -->
+    <div class="thumb-strip" id="thumb-strip"></div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // 14 SLIDE DATA STRUCTURE (ZUHRIYAH INSTITUT)
+    // ==========================================
+    const SLIDES = [
+      {
+        id: 1,
+        type: 'cover',
+        tag: 'SLIDE AWAL',
+        title: 'Cover Workshop Digital'
+      },
+      {
+        id: 2,
+        type: 'content',
+        tag: 'URGENSI & REALITAS',
+        title: 'Mengapa Muslimah Harus Memimpin di Era Digital?',
+        subhead: 'Membangun kehadiran digital yang santun, bermakna, dan berdaya saing global.',
+        html: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.15); color: #f6b50c;">🌊</div>
+              <h3>Banjir Informasi & Perang Wacana</h3>
+              <p>Ruang digital dipenuhi jutaan konten setiap menit. Jika perempuan muslimah berilmu tidak hadir bersuara, ruang maya akan dikuasai narasi nirfaedah dan destruktif.</p>
+              <span class="pill">Tantangan Zaman</span>
+            </div>
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.25); color: #f6b50c;">👑</div>
+              <h3>Madrasatul Ula (Pendidik Utama)</h3>
+              <p>Perempuan adalah pilar keluarga dan madrasah pertama bagi generasi penerus. Cerdas digital adalah benteng proteksi moral anak-anak dari ancaman siber.</p>
+              <span class="pill" style="color: #f6b50c; background: rgba(246, 181, 12, 0.15);">Peran Sentral</span>
+            </div>
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">⏱️</div>
+              <h3>AI sebagai Khadimah (Asisten)</h3>
+              <p>Ibu dan muslimah memikul amanah rumah tangga dan karier. AI hadir memangkas waktu riset dan teknis konten dari 4 jam menjadi cukup 15 menit!</p>
+              <span class="pill">Akselerasi Waktu</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">💡</span>
+            <p>"Bukan sekadar menjadi konsumen pasif algoritma, melainkan produsen konten kebaikan yang mencerahkan peradaban."</p>
+          </div>
+        `
+      },
+      {
+        id: 3,
+        type: 'content',
+        tag: 'ETIKA & SYIAR',
+        title: 'Adab & Fiqih Pemanfaatan AI dalam Dakwah',
+        subhead: 'Menjaga kemurnian niat dan integritas syariat dalam setiap klik dan prompt.',
+        html: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">💎</div>
+              <h3>1. Ikhlas & Luruskan Niat</h3>
+              <p>AI adalah alat, bukan tujuan. Pembuatan konten bukan untuk mengejar metrik kesombongan, viralitas kosong, atau pujian netizen, melainkan murni mengharap ridha Allah.</p>
+              <span class="pill" style="color: #34d399;">Fondasi Hati</span>
+            </div>
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">📖</div>
+              <h3>2. Tabayyun & Amanah Ilmiah</h3>
+              <p>AI model generatif bisa berhalusinasi. Haram mempublikasikan dalil atau fatwa tanpa verifikasi kitab rujukan asli. AI bukan Mufti pengganti ulama!</p>
+              <span class="pill" style="color: #f6b50c;">Kredibilitas Dalil</span>
+            </div>
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">🌸</div>
+              <h3>3. Adab Visual Syar'i</h3>
+              <p>Menghindari visual yang melanggar batasan aurat dan tabarruj. Mengutamakan estetika kaligrafi, animasi tipografi, infografis data, dan visual alam yang menyejukkan.</p>
+              <span class="pill">Kesantunan Syiar</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">📜</span>
+            <p>Kaidah Emas: "Kebenaran konten dinilai dari kesahihan dalilnya, bukan dari seberapa canggih teknologi yang memproduksinya."</p>
+          </div>
+        `
+      },
+      {
+        id: 4,
+        type: 'content',
+        tag: 'ARSITEKTUR KERJA',
+        title: 'The AI Dream Team: Multi-Tool Orchestration',
+        subhead: 'Mengapa tidak ada satu AI yang serba bisa? Rahasia agensi kreatif profesional.',
+        html: `
+          <div class="grid-4">
+            <div class="card" style="border-top: 4px solid #ef4444;">
+              <div class="card-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">🔍</div>
+              <h3>Grok (xAI)</h3>
+              <p>Radar isu terkini & sentimen publik real-time dari platform X (Twitter).</p>
+              <span class="pill" style="color: #f87171;">Fase: Riset Ide</span>
+            </div>
+            <div class="card card-gold" style="border-top: 4px solid var(--accent-gold);">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">📚</div>
+              <h3>NotebookLM</h3>
+              <p>Bedah dokumen kitab & jurnal syar'i bebas halusinasi 100% berbasis file.</p>
+              <span class="pill" style="color: #f6b50c;">Fase: Verifikasi Dalil</span>
+            </div>
+            <div class="card" style="border-top: 4px solid #10b981;">
+              <div class="card-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">✍️</div>
+              <h3>ChatGPT</h3>
+              <p>Maestro narasi, gaya bahasa empati muslimah, hook & copywriting.</p>
+              <span class="pill" style="color: #34d399;">Fase: Penyusunan Teks</span>
+            </div>
+            <div class="card" style="border-top: 4px solid #38bdf8;">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">🎨</div>
+              <h3>Video & Visual AI</h3>
+              <p>Canva, CapCut AI & ElevenLabs untuk visual islami dan voice-over anggun.</p>
+              <span class="pill" style="color: #38bdf8;">Fase: Produksi Akhir</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">⚡</span>
+            <p>Alur Berantai: Ide Isu (Grok) ➔ Bukti Dalil (NotebookLM) ➔ Narasi Empatik (ChatGPT) ➔ Visual Elegan (Canva/CapCut).</p>
+          </div>
+        `
+      },
+      {
+        id: 5,
+        type: 'content',
+        tag: 'TOOL 1: RISET TREN',
+        title: 'Grok (xAI): Radar Isu & Keresahan Publik Real-Time',
+        subhead: 'Menangkap topik hangat dan keresahan para ibu sebelum viral di media sosial.',
+        html: `
+          <div class="grid-split">
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">📡</div>
+              <h3>Kekuatan Super Grok</h3>
+              <ul style="color: var(--text-light); font-size: 0.92rem; line-height: 1.6; margin-left: 18px; margin-top: 8px;">
+                <li><b>Akses Data Detik Ini:</b> Mengindeks jutaan tweet/percakapan X secara langsung.</li>
+                <li><b>Tanpa Sensor Basi:</b> Mengungkap keresahan nyata perempuan (parenting, kesehatan mental, fiqih wanita modern).</li>
+                <li><b>Analisis Sentimen:</b> Mengetahui apakah publik sedang cemas, bingung, atau marah terhadap suatu isu.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">Contoh Prompt Riset Muslimah di Grok:</h3>
+              <div style="background: rgba(0, 0, 0, 0.35); padding: 14px; border-radius: 10px; font-family: monospace; font-size: 0.85rem; color: #a5f3fc; line-height: 1.5; border: 1px solid rgba(56, 189, 248, 0.2);">
+                "Identifikasi 5 keresahan terbesar ibu muda muslimah di Indonesia minggu ini seputar mendidik anak di era gadget. Tampilkan argumen paling emosional dan pertanyaan yang belum terjawab."
+              </div>
+              <p style="margin-top: 14px; font-size: 0.88rem; color: var(--text-muted);">
+                <b>Output yang didapat:</b> Ide konten yang <i>relatable</i>, tepat sasaran, dan langsung dicari audiens.
+              </p>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 6,
+        type: 'content',
+        tag: 'TOOL 2: AKURASI DALIL',
+        title: 'NotebookLM: Riset Rujukan Shahih Bebas Halusinasi',
+        subhead: 'Google NotebookLM: Senjata utama kreator dakwah berbasis kitab & sumber primer.',
+        html: `
+          <div class="grid-split">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">🛡️</div>
+              <h3>Mengapa NotebookLM Wajib untuk Dakwah?</h3>
+              <p style="margin-bottom: 12px;">Berbeda dengan ChatGPT yang bisa mengarang hadis, <b>NotebookLM hanya menjawab dari dokumen PDF yang kita unggah</b> (*Zero Hallucination*).</p>
+              <div style="background: rgba(56, 189, 248, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent-cyan); font-size: 0.85rem;">
+                <b>Cara Pakai:</b> Unggah PDF Kitab Fiqih Sunnah Wanita, Kumpulan Fatwa MUI, atau Buku Parenting Islami ➔ Ajukan pertanyaan spesifik.
+              </div>
+            </div>
+            <div class="card card-gold">
+              <h3 style="color: var(--accent-gold);">Fitur Sakti NotebookLM:</h3>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 8px;">
+                  <b>1. Sitasi Langsung:</b> Setiap baris jawaban menyertakan nomor halaman dan kutipan asli dari PDF rujukan Anda.
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 8px;">
+                  <b>2. Audio Deep Dive:</b> Mengubah kumpulan catatan fatwa menjadi format obrolan podcast dua suara secara otomatis!
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 8px;">
+                  <b>3. Multi-Document Synthesis:</b> Membandingkan 5 buku sekaligus dalam satu klik.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 7,
+        type: 'content',
+        tag: 'TOOL 3: SENTUHAN HATI',
+        title: 'ChatGPT: Sang Maestro Narasi & Empati Muslimah',
+        subhead: 'Mengubah teks dalil yang kaku menjadi gaya bertutur yang hangat, menyentuh, dan menggerakkan.',
+        html: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;">❤️</div>
+              <h3>1. Tone of Voice Empatik</h3>
+              <p>Mampu menirukan gaya bahasa seorang ibu bijak, sahabat muslimah yang merangkul (*sisterhood*), tanpa kesan menggurui atau menghakimi.</p>
+              <span class="pill" style="color: #fb7185;">Sentuhan Emosional</span>
+            </div>
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">🪝</div>
+              <h3>2. Formula 3-Detik Hook</h3>
+              <p>Meracik kalimat pembuka judul reels/carousel yang menghentikan jempol audiens agar tidak langsung scroll lewat di feed medsos.</p>
+              <span class="pill" style="color: #f6b50c;">Penarik Perhatian</span>
+            </div>
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📑</div>
+              <h3>3. Struktur Carousel Slide</h3>
+              <p>Membagi naskah panjang ke dalam alur 5-7 slide carousel: Masalah ➔ Solusi Dalil ➔ Langkah Aksi ➔ Ajakan Doa bersama.</p>
+              <span class="pill">Struktur Konten</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">✍️</span>
+            <p>Rahasia Prompt: "Ubah dalil kesabaran ini menjadi narasi seorang ibu yang sedang lelah mengurus anak balita di malam hari dengan bahasa yang sangat lembut dan menenangkan hati."</p>
+          </div>
+        `
+      },
+      {
+        id: 8,
+        type: 'content',
+        tag: 'TOOL 4: ESTETIKA VISUAL',
+        title: 'Video & Visual AI: Syiar Kreatif, Anggun & Syar'i',
+        subhead: 'Memproduksi konten audio-visual tanpa perlu wajah dan tanpa skill editing rumit.',
+        html: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">🎨</div>
+              <h3>Canva Magic Studio</h3>
+              <p>Pembuatan 5 slide infografis carousel otomatis dari teks narasi ChatGPT dalam waktu di bawah 3 menit dengan tema warna islami yang serasi.</p>
+              <span class="pill">Visual Infografis</span>
+            </div>
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">🎬</div>
+              <h3>CapCut AI Auto-Caption</h3>
+              <p>Menghasilkan teks subtitle animasi otomatis yang dinamis untuk video reels dakwah, dilengkapi template B-roll estetik bernuansa alam & kaligrafi.</p>
+              <span class="pill" style="color: #f6b50c;">Reels & Shorts</span>
+            </div>
+            <div class="card">
+              <div class="card-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🎙️</div>
+              <h3>ElevenLabs Voice AI</h3>
+              <p>Pengisi suara narasi islami perempuan berbahasa Indonesia yang sangat tenang, lembut, berwibawa, dan tanpa desah berlebihan sesuai adab suara.</p>
+              <span class="pill" style="color: #34d399;">Audio Voice-Over</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">🌸</span>
+            <p>Prinsip Visual Muslimah: Mengedepankan kesederhanaan, kebersihan tipografi, dan kontras warna yang nyaman di mata.</p>
+          </div>
+        `
+      },
+      {
+        id: 9,
+        type: 'content',
+        tag: 'MATRIKS KOMPARASI',
+        title: 'Matriks Komparasi AI: Kapan Memakai Apa?',
+        subhead: 'Panduan navigasi praktis bagi kreator Zuriyah Institut agar tidak salah pilih alat.',
+        html: `
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Instrumen AI</th>
+                <th>Kekuatan Terbesar (Jagoan)</th>
+                <th>Kelemahan / Risiko</th>
+                <th>Waktu Terbaik Digunakan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Grok (xAI)</b></td>
+                <td>Data real-time detik ini, sentimen X tanpa filter basi</td>
+                <td>Bahasanya terkadang terlalu bebas / santai</td>
+                <td><span style="color: var(--accent-gold); font-weight: 700;">Tahap 1:</span> Menemukan isu hangat & keresahan ibu</td>
+              </tr>
+              <tr>
+                <td><b>NotebookLM</b></td>
+                <td>Akurasi 100% dari PDF sumber, sitasi nomor halaman</td>
+                <td>Tidak bisa mengarang ide baru di luar dokumen</td>
+                <td><span style="color: var(--accent-gold); font-weight: 700;">Tahap 2:</span> Verifikasi dalil kitab & fatwa syar'i</td>
+              </tr>
+              <tr>
+                <td><b>ChatGPT</b></td>
+                <td>Gaya bahasa empati, storytelling, copywriting, hook</td>
+                <td>Bisa berhalusinasi jika diminta mencari dalil sendiri</td>
+                <td><span style="color: var(--accent-gold); font-weight: 700;">Tahap 3:</span> Meracik narasi, naskah reels, & caption</td>
+              </tr>
+              <tr>
+                <td><b>Canva & CapCut AI</b></td>
+                <td>Produksi visual & video kilat tanpa skill desain mahir</td>
+                <td>Perlu kurasi manual agar visual tetap bernilai syar'i</td>
+                <td><span style="color: var(--accent-gold); font-weight: 700;">Tahap 4:</span> Finishing desain infografis & ekspor</td>
+              </tr>
+            </tbody>
+          </table>
+        `
+      },
+      {
+        id: 10,
+        type: 'content',
+        tag: 'ALUR KERJA PRAKTIS',
+        title: 'The 15-Minute Content Pipeline (Dari Ide ke Siap Upload)',
+        subhead: 'Standar prosedur operasional pembuatan konten berkualitas tinggi bagi muslimah sibuk.',
+        html: `
+          <div class="step-timeline">
+            <div class="step-item">
+              <div class="num">1</div>
+              <h4>Menit 01 – 03</h4>
+              <p><b>Grok:</b> Tangkap isu trending seputar anak/keluarga di media sosial. Temukan rasa cemas para ibu.</p>
+            </div>
+            <div class="step-item" style="border-color: var(--accent-gold);">
+              <div class="num" style="background: var(--accent-gold);">2</div>
+              <h4>Menit 04 – 07</h4>
+              <p><b>NotebookLM:</b> Cari dalil Al-Qur'an/Hadis dari PDF kitab rujukan Anda. Verifikasi tafsir & fatwa ulama.</p>
+            </div>
+            <div class="step-item">
+              <div class="num" style="background: #10b981; color: white;">3</div>
+              <h4>Menit 08 – 11</h4>
+              <p><b>ChatGPT:</b> Tulis narasi carousel 5 slide + hook 3 detik + caption doa penutup yang mengena di hati.</p>
+            </div>
+            <div class="step-item">
+              <div class="num" style="background: #38bdf8; color: #022047;">4</div>
+              <h4>Menit 12 – 15</h4>
+              <p><b>Canva/CapCut:</b> Masukkan teks ke template desain elegan. Export video/gambar ➔ Konten siap tayang!</p>
+            </div>
+          </div>
+          <div class="banner-quote" style="margin-top: 24px;">
+            <span class="icon">🚀</span>
+            <p>Hasil: Konten dengan dalil yang terverifikasi kuat, bahasa yang menyentuh hati, dan visual yang rapi dalam tempo kerja 15 menit saja!</p>
+          </div>
+        `
+      },
+      {
+        id: 11,
+        type: 'content',
+        tag: 'STUDI KASUS NYATA',
+        title: 'Bedah Kasus: Transformasi Kualitas Konten',
+        subhead: 'Perbandingan nyata antara metode konvensional lama vs hasil orkestrasi AI modern.',
+        html: `
+          <div class="grid-2">
+            <div class="card" style="border-left: 4px solid #ef4444;">
+              <h3 style="color: #f87171;">❌ Cara Lama (Konvensional)</h3>
+              <ul style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin-left: 18px; margin-top: 10px;">
+                <li>Menghabiskan 3-4 jam mencari ide dan mengetik manual.</li>
+                <li>Teks dalil panjang ditempel di atas gambar latar yang ramai.</li>
+                <li>Tulisan kecil dan sulit dibaca di layar smartphone.</li>
+                <li>Bahasa kaku terkesan menghakimi ("Hati-hati kalian berdosa!").</li>
+                <li>Tingkat pembaca yang menyimpan (saves) dan membagikan (shares) sangat rendah.</li>
+              </ul>
+            </div>
+            <div class="card card-gold" style="border-left: 4px solid var(--accent-gold);">
+              <h3 style="color: var(--accent-gold);">✅ Cara Baru (AI Orchestrated)</h3>
+              <ul style="color: var(--text-light); font-size: 0.88rem; line-height: 1.6; margin-left: 18px; margin-top: 10px;">
+                <li>Selesai dalam 15-20 menit dengan alur kerja terstruktur.</li>
+                <li>Slide 1: Hook empati ("Bunda pernah merasa lelah sampai ingin menangis?").</li>
+                <li>Slide 2-4: Nasihat hadis sahih dengan visual bento-grid bersih.</li>
+                <li>Slide 5: Tips praktis 1-2-3 yang bisa dipraktikkan ibu hari ini juga.</li>
+                <li>Menghasilkan ribuan shares karena menyentuh jiwa dan mendidik.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 12,
+        type: 'content',
+        tag: 'KURIKULUM WORKSHOP',
+        title: 'Rencana Kegiatan 2 Hari: 26-27 September 2026',
+        subhead: 'Jadwal terpadu teori, praktik terbimbing, dan presentasi karya peserta.',
+        html: `
+          <div class="grid-2">
+            <div class="card card-gold">
+              <div class="tag" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c; align-self: flex-start;">HARI 1: SABTU, 26 SEPTEMBER 2026</div>
+              <h3 style="margin-top: 8px;">Fondasi, Riset & Akurasi Dalil</h3>
+              <ul style="color: var(--text-light); font-size: 0.88rem; line-height: 1.6; margin-left: 18px; margin-top: 10px;">
+                <li><b>Sesi 1:</b> Mindset Kreator Muslimah & Fiqih Konten Digital.</li>
+                <li><b>Sesi 2:</b> Bedah Tren Isu dengan Grok & Menangkap Keresahan Umat.</li>
+                <li><b>Sesi 3:</b> Hands-on NotebookLM: Membedah Kitab Tanpa Halusinasi.</li>
+                <li><b>Tugas Mandiri:</b> Menentukan 1 tema dakwah & bahan rujukan PDF.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; align-self: flex-start;">HARI 2: AHAD, 27 SEPTEMBER 2026</div>
+              <h3 style="margin-top: 8px;">Produksi Kreatif & Peluncuran Syiar</h3>
+              <ul style="color: var(--text-light); font-size: 0.88rem; line-height: 1.6; margin-left: 18px; margin-top: 10px;">
+                <li><b>Sesi 4:</b> Meracik Storytelling & Hook Menyentuh Hati via ChatGPT.</li>
+                <li><b>Sesi 5:</b> Produksi Visual Carousel & Video Reels (Canva & CapCut).</li>
+                <li><b>Sesi 6:</b> Live Showcase Karya Peserta & Mentorship Feedback.</li>
+                <li><b>Penutupan:</b> Pelantikan Komunitas Alumni Kreator Zuriyah Institut.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 13,
+        type: 'content',
+        tag: 'PESAN HIKMAH',
+        title: '3 Kunci Keberkahan Konten Digital Muslimah',
+        subhead: 'Pesan penutup dari dewan pembina dan instruktur Zuriyah Institut.',
+        html: `
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🌟</div>
+              <h3>1. Ikhlas (Kejujuran Niat)</h3>
+              <p>Niatkan setiap postingan sebagai amal jariyah penyambung kebaikan. Jangan biarkan jumlah views dan likes menggeser ketulusan niat awal Anda.</p>
+              <span class="pill" style="color: #34d399;">Amal Jariyah</span>
+            </div>
+            <div class="card card-gold">
+              <div class="card-icon" style="background: rgba(246, 181, 12, 0.2); color: #f6b50c;">🎯</div>
+              <h3>2. Itqan (Kualitas & Ketelitian)</h3>
+              <p>Islam mencintai keindahan dan kerapian (*itqan*). Manfaatkan AI untuk menghasilkan karya bermutu tinggi, tertata apik, dan dapat dipertanggungjawabkan ilmunya.</p>
+              <span class="pill" style="color: #f6b50c;">Kualitas Terbaik</span>
+            </div>
+            <div class="card">
+              <div class="card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">⚓</div>
+              <h3>3. Istiqomah (Konsistensi)</h3>
+              <p>Dampak dakwah tidak lahir dalam semalam. Konsistensi membagikan 1 konten bernilai setiap minggu jauh lebih dicintai daripada ledakan semangat sesaat.</p>
+              <span class="pill">Jangka Panjang</span>
+            </div>
+          </div>
+          <div class="banner-quote">
+            <span class="icon">✨</span>
+            <p>"Teknologi akan terus berganti, tetapi pahala dari hati yang ikhlas menebar kebaikan akan abadi selamanya."</p>
+          </div>
+        `
+      },
+      {
+        id: 14,
+        type: 'content',
+        tag: 'AKHIR SESI & JEJARING',
+        title: 'Sesi Diskusi, Tanya Jawab & Komunitas Alumni',
+        subhead: 'Zuhriyah Institut — Bersama Melahirkan Generasi Cerdas Digital dan Berakhlak Mulia.',
+        html: `
+          <div class="grid-split">
+            <div class="card card-gold">
+              <h3 style="color: var(--accent-gold); margin-bottom: 12px;">Pintu Diskusi Terbuka (Q&A)</h3>
+              <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+                Silakan ajukan pertanyaan seputar kendala praktik AI, penentuan topik dakwah muslimah, maupun adab teknis di media sosial.
+              </p>
+              <div style="background: rgba(0, 0, 0, 0.2); padding: 14px; border-radius: 10px; border-left: 3px solid var(--accent-gold);">
+                <b>Akses Tambahan Peserta:</b>
+                <ul style="font-size: 0.85rem; margin-left: 18px; margin-top: 6px; color: var(--text-light);">
+                  <li>Paket 50+ Template Prompt AI Khusus Konten Muslimah.</li>
+                  <li>Unduhan PDF Panduan Alur Kerja 15 Menit.</li>
+                  <li>Grup Pendampingan WhatsApp Alumni Zuhriyah Institut.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card" style="align-items: center; justify-content: center; text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 10px;">🤝</div>
+              <h3 style="font-size: 1.3rem;">Terima Kasih & Jazakumullah Khairan</h3>
+              <p style="margin-top: 8px; font-size: 0.9rem; max-width: 320px;">
+                Sampai jumpa di sesi praktik dan komunitas kreator dakwah digital!
+              </p>
+              <div style="margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                <span>🌐</span> Zuhriyah Institut Digital Hub
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    // ==========================================
+    // PRESENTATION CONTROLLER LOGIC
+    // ==========================================
+    let currentPage = 1;
+    const totalPages = SLIDES.length;
+    let hideTimeout = null;
+
+    const slideContainer = document.getElementById('slide-container');
+    const counter = document.getElementById('counter');
+    const topBar = document.getElementById('top-bar');
+    const bottomBar = document.getElementById('bottom-bar');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnFs = document.getElementById('btn-fs');
+    const thumbStrip = document.getElementById('thumb-strip');
+    const remoteStatus = document.getElementById('remote-status');
+
+    // Build Thumbnails
+    SLIDES.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = `thumb-btn ${s.id === 1 ? 'active' : ''}`;
+      btn.textContent = s.id === 1 ? 'COVER' : `S${s.id}`;
+      btn.title = `Slide ${s.id}: ${s.title}`;
+      btn.onclick = () => goToPage(s.id);
+      thumbStrip.appendChild(btn);
+    });
+
+    function renderSlide(index) {
+      const s = SLIDES[index - 1];
+      if (!s) return;
+
+      if (s.type === 'cover') {
+        slideContainer.innerHTML = `
+          <div class="cover-view">
+            <img src="cover.jpg" alt="Cover Workshop Digital Zuhriyah Institut" class="cover-img">
+          </div>
+        `;
+      } else {
+        slideContainer.innerHTML = `
+          <div class="slide-body">
+            <div class="slide-header">
+              <div>
+                <span class="tag">${s.tag}</span>
+                <h1>${s.title}</h1>
+                <p class="subhead">${s.subhead}</p>
+              </div>
+            </div>
+            ${s.html}
+          </div>
+        `;
+      }
+    }
+
+    function goToPage(pageNum) {
+      if (pageNum < 1) pageNum = 1;
+      if (pageNum > totalPages) pageNum = totalPages;
+      if (pageNum === currentPage && slideContainer.children.length > 0) return;
+
+      currentPage = pageNum;
+      slideContainer.classList.add('fading');
+
+      setTimeout(() => {
+        renderSlide(currentPage);
+        slideContainer.classList.remove('fading');
+        counter.textContent = `${currentPage} / ${totalPages}`;
+
+        // Update Thumbnails
+        document.querySelectorAll('.thumb-btn').forEach((btn, idx) => {
+          if (idx + 1 === currentPage) {
+            btn.classList.add('active');
+            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        reportStatus();
+      }, 150);
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages) {
+        goToPage(currentPage + 1);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        goToPage(currentPage - 1);
+      }
+    }
+
+    btnNext.onclick = nextPage;
+    btnPrev.onclick = prevPage;
+    document.getElementById('zone-right').onclick = nextPage;
+    document.getElementById('zone-left').onclick = prevPage;
+
+    // Fullscreen Toggle
+    btnFs.onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    };
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevPage();
+      } else if (e.key === 'Home') {
+        goToPage(1);
+      } else if (e.key === 'End') {
+        goToPage(totalPages);
+      } else if (e.key.toLowerCase() === 'f') {
+        btnFs.click();
+      }
+      resetHideTimeout();
+    });
+
+    // Touch Swipe
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      resetHideTimeout();
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextPage();
+      } else if (touchEndX - touchStartX > 50) {
+        prevPage();
+      }
+    }, { passive: true });
+
+    // UI Auto-Hide
+    function resetHideTimeout() {
+      topBar.classList.remove('ui-hidden');
+      bottomBar.classList.remove('ui-hidden');
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        topBar.classList.add('ui-hidden');
+        bottomBar.classList.add('ui-hidden');
+      }, 3500);
+    }
+
+    window.addEventListener('mousemove', resetHideTimeout);
+    resetHideTimeout();
+
+    // ==========================================
+    // CLOUD MQTT REMOTE SYNC (AV MASTER CONTROL)
+    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const CHANNEL_ID = urlParams.get('channel') || localStorage.getItem('av_channel_id') || 'ruang-sidang-utama';
+    const BROKERS = [
+      'wss://broker.emqx.io:8084/mqtt',
+      'wss://broker.hivemq.com:8884/mqtt'
+    ];
+    let brokerIdx = 0;
+    let mqttClient = null;
+    let heartbeatInterval = null;
+
+    function reportStatus() {
+      if (mqttClient && mqttClient.connected) {
+        const payload = {
+          state: 'PROFILE',
+          event: 'ZUHRIYAH_WORKSHOP',
+          slide: currentPage,
+          total: totalPages,
+          operator: 'Layar Zuhriyah',
+          timestamp: Date.now()
+        };
+        mqttClient.publish(`avcontrol/${CHANNEL_ID}/status`, JSON.stringify(payload));
+      }
+    }
+
+    function sendHeartbeat() {
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(`avcontrol/${CHANNEL_ID}/heartbeat`, JSON.stringify({
+          status: 'ALIVE',
+          device: 'zuhriyah_presentation',
+          slide: currentPage,
+          total: totalPages,
+          timestamp: Date.now()
+        }));
+      }
+    }
+
+    function connectMQTT() {
+      mqttClient = mqtt.connect(BROKERS[brokerIdx], {
+        clientId: `zuhriyah_${Date.now().toString(36)}`,
+        clean: true,
+        keepalive: 15,
+        reconnectPeriod: 2000,
+        connectTimeout: 5000
+      });
+
+      mqttClient.on('connect', () => {
+        remoteStatus.textContent = `Remote HP Terhubung (${CHANNEL_ID})`;
+        mqttClient.subscribe(`avcontrol/${CHANNEL_ID}/command`);
+        reportStatus();
+        sendHeartbeat();
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(sendHeartbeat, 2000);
+      });
+
+      mqttClient.on('message', (topic, message) => {
+        try {
+          const data = JSON.parse(message.toString());
+          if (data.target === 'NEXT_SLIDE') {
+            nextPage();
+          } else if (data.target === 'PREV_SLIDE') {
+            prevPage();
+          } else if (data.target === 'PROFILE') {
+            goToPage(1);
+          }
+        } catch (e) {
+          console.error('MQTT error:', e);
+        }
+      });
+
+      mqttClient.on('error', () => {
+        brokerIdx = (brokerIdx + 1) % BROKERS.length;
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        setTimeout(connectMQTT, 2500);
+      });
+
+      mqttClient.on('close', () => {
+        remoteStatus.textContent = 'Menghubungkan Ulang...';
+      });
+    }
+
+    // Inisialisasi Tampilan
+    goToPage(1);
+    connectMQTT();
+  </script>
+</body>
+</html>
